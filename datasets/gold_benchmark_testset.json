@@ -1,0 +1,3921 @@
+[
+  {
+    "text": "రమేష్ నిన్న 1000 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "రమేష్",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Advance payment of 15000 transferred to Naresh Cloths",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh Cloths",
+      "amount": 15000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Naresh garu nundi rendu vandalu ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh garu",
+      "amount": 200,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Supplier ki 2500 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya garu",
+      "amount": 2500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Need to pay 6000 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas Mills",
+      "amount": 6000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "ప్రియ మెడికల్స్ కి 5000 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "ప్రియ మెడికల్స్",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "ప్రియ మెడికల్స్ నిన్న 1000 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "ప్రియ మెడికల్స్",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Srinivas anna nundi 2000 ravali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas anna",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Advance payment of 10000 transferred to Srinivas Stores",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas Stores",
+      "amount": 10000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Anand Electricals promised to clear 3000 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand Electricals",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 2000 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "ప్రియ మెడికల్స్",
+      "amount": 2000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 2000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Anand gaaru vache vaaram enimidi vela ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand gaaru",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Balu nundi 1000 rupailu raavali",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Balu gaaru ki 4800 goods ichamu credit meeda",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu gaaru",
+      "amount": 4800,
+      "direction": "receivable",
+      "event_type": "credit_sale"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 1000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Venkat ninnaa 3000 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "లక్ష్మి ట్రేడర్స్ శుక్రవారం కి 2500 ఇస్తాను అన్నాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "లక్ష్మి ట్రేడర్స్",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Need to pay 20000 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi Distributors",
+      "amount": 20000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Priya vacche vaaram 1000 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Naresh garu ki 2000 goods ichamu credit meeda",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh garu",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "credit_sale"
+    }
+  },
+  {
+    "text": "Balu gaaru nundi iravai aidhu vela ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu gaaru",
+      "amount": 25000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Satish ninnaa 500 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Naresh akka iravai aidhu vela ivvali monna",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh akka",
+      "amount": 25000,
+      "direction": "receivable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Lakshmi gaaru ki 12000 pending undi",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi gaaru",
+      "amount": 12000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Venkat akka today padhi vela ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat akka",
+      "amount": 10000,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Krishna mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Last month 5000 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas anna",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Supplier ki 5000 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat garu",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 1500 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "సురేష్",
+      "amount": 1500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Lakshmi gaaru nundi oka laksha ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi gaaru",
+      "amount": 100000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Srinivas akka nundi oka laksha ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas akka",
+      "amount": 100000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Venkat akka ki 750 pending undi",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat akka",
+      "amount": 750,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Supplier ki 2000 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish",
+      "amount": 2000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Priya vacche vaaram 3000 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "రమేష్ నిన్న 10000 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "రమేష్",
+      "amount": 10000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Satish Hardware promised to clear 3000 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish Hardware",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Advance payment of 3000 transferred to Suresh Hardware",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh Hardware",
+      "amount": 3000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Srinivas bhai ninna 2000 bank transfer dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas bhai",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 1000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "ప్రియ మెడికల్స్ నిన్న 500 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "ప్రియ మెడికల్స్",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Anand ki 1000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand",
+      "amount": 1000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Venkat bhai ninna ki iravai vela istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat bhai",
+      "amount": 20000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Priya ninna 12000 phonepe dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya",
+      "amount": 12000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Priya ki 1000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya",
+      "amount": 1000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Ravi akka next week ki aaru vandalu istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi akka",
+      "amount": 600,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "ప్రియ మెడికల్స్ కి 1500 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "ప్రియ మెడికల్స్",
+      "amount": 1500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Krishna mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Supplier ki 1200 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna akka",
+      "amount": 1200,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Ramesh anna ninna 2500 bank transfer dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh anna",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Supplier ki nalugu vela ivvali next Monday",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh garu",
+      "amount": 4000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Anand bhai ninna 2500 bank transfer dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand bhai",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Srinivas vacche vaaram 3000 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Advance payment of 6000 transferred to Venkat Electricals",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat Electricals",
+      "amount": 6000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Naresh vacche vaaram 5000 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "రమేష్ శుక్రవారం కి 2000 ఇస్తాను అన్నాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "రమేష్",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Naresh mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Venkat Kirana paid 3000 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat Kirana",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Need to pay 10000 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi Distributors",
+      "amount": 10000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Srinivas ki 8000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 8000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Advance payment of 20000 transferred to Rajesh Medicals",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh Medicals",
+      "amount": 20000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "మహేష్ శుక్రవారం కి 5000 ఇస్తాను అన్నాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "మహేష్",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Rajesh gaaru ninna 750 online dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh gaaru",
+      "amount": 750,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Lakshmi akka Friday ki remaining 8000 istanu annadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi akka",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Ravi Traders paid 3000 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi Traders",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Anand mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Ravi garu next week ki oka laksha istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi garu",
+      "amount": 100000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 1000 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "మహేష్",
+      "amount": 1000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Supplier ki padhi vela ivvali today",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna akka",
+      "amount": 10000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Mahesh gaaru ki 2500 pending undi",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh gaaru",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Venkat nundi nalugu vandalu ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat",
+      "amount": 400,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "మహేష్ శుక్రవారం కి 500 ఇస్తాను అన్నాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "మహేష్",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Naresh anna ee roju ki iravai vela istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh anna",
+      "amount": 20000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Anand akka vache vaaram aaru vandalu ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand akka",
+      "amount": 600,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Suresh akka ki 8000 pending undi",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh akka",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "వెంకట్ నిన్న 2500 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "వెంకట్",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "రమేష్ నిన్న 2000 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "రమేష్",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Mahesh anna kritham nela ki vanda istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh anna",
+      "amount": 100,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "రమేష్ కి 2000 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "రమేష్",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Anand garu ki 4800 goods ichamu credit meeda",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand garu",
+      "amount": 4800,
+      "direction": "receivable",
+      "event_type": "credit_sale"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 2500",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Suresh bhai ninna 2500 bank transfer dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh bhai",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Mahesh ki 1000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh",
+      "amount": 1000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "లక్ష్మి ట్రేడర్స్ కి 500 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "లక్ష్మి ట్రేడర్స్",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Kiran Kirana promised to clear 3000 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran Kirana",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Anand anna oka laksha ivvali kritham nela",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand anna",
+      "amount": 100000,
+      "direction": "receivable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Last month 3500 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh akka",
+      "amount": 3500,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Ramesh bhai ki 2500 goods ichamu credit meeda",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh bhai",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "credit_sale"
+    }
+  },
+  {
+    "text": "Balu vacche vaaram 8000 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 500 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "మహేష్",
+      "amount": 500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Pending payment of 1500 from Ramesh Stores",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh Stores",
+      "amount": 1500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Kiran vacche vaaram 5000 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Supplier ki 5000 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish akka",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Anand anna nundi 750 ravali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand anna",
+      "amount": 750,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Last month 5000 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh anna",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Kiran bhai enimidi vandalu ivvali yesterday",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran bhai",
+      "amount": 800,
+      "direction": "receivable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Kiran nundi 12000 ravali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran",
+      "amount": 12000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "ప్రియ మెడికల్స్ కి 10000 అడ్వాన్స్ పంపాము",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "ప్రియ మెడికల్స్",
+      "amount": 10000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Srinivas anna ninna 2500 bank transfer dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas anna",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Priya nundi 2500 rupailu raavali",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Srinivas next Monday aidhu vandalu ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Advance payment of 1500 transferred to Mahesh Hardware",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh Hardware",
+      "amount": 1500,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Srinivas Hardware paid 15000 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas Hardware",
+      "amount": 15000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Srinivas bhai ninna 25000 cash dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas bhai",
+      "amount": 25000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Need to pay 1500 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran Distributors",
+      "amount": 1500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Venkat akka kritham nela ki iravai aidhu vela istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat akka",
+      "amount": 25000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 8000 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "సురేష్",
+      "amount": 8000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Venkat gaaru tomorrow nalabhai vela ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat gaaru",
+      "amount": 40000,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Kiran Agency promised to clear 3000 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran Agency",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "మహేష్ కి 2000 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "మహేష్",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Satish akka Friday ki ki aidhu vela istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish akka",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Supplier ki oka laksha ivvali last month",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh anna",
+      "amount": 100000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "ప్రియ మెడికల్స్ నిన్న 5000 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "ప్రియ మెడికల్స్",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Naresh anna thommidi vandalu ivvali next week",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh anna",
+      "amount": 900,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Kiran gaaru last month veyyi ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran gaaru",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Krishna ki 5000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Kiran Kirana paid 20000 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran Kirana",
+      "amount": 20000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Advance payment of 15000 transferred to Lakshmi Electricals",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi Electricals",
+      "amount": 15000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Naresh ninnaa 500 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Rajesh bhai kritham nela aidhu vandalu ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh bhai",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 2000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 8000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Ramesh akka ninna 5000 online dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh akka",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Ravi gaaru mudu vandalu ivvali yesterday",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi gaaru",
+      "amount": 300,
+      "direction": "receivable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Ramesh akka ninna 4800 cash dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh akka",
+      "amount": 4800,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Kiran anna ninna 25000 online dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran anna",
+      "amount": 25000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Rajesh gaaru nundi veyyi aidhu vandalu ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh gaaru",
+      "amount": 1500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Venkat mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Rajesh vacche vaaram 500 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Suresh bhai next Monday ki veyyi istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh bhai",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "ప్రియ మెడికల్స్ కి 3000 అడ్వాన్స్ పంపాము",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "ప్రియ మెడికల్స్",
+      "amount": 3000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Srinivas garu nundi nalugu vela ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas garu",
+      "amount": 4000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Last month 8000 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran akka",
+      "amount": 8000,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Lakshmi ninnaa 1000 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Anand nundi 5000 rupailu raavali",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Srinivas garu nundi padhaidhu vela ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas garu",
+      "amount": 15000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Lakshmi Agency promised to clear 4500 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi Agency",
+      "amount": 4500,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Priya anna Friday ki ki rendu vela five hundred istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya anna",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Ramesh today ki nalabhai vela istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh",
+      "amount": 40000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "రమేష్ కి 1000 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "రమేష్",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Advance payment of 1500 transferred to Srinivas Kirana",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas Kirana",
+      "amount": 1500,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 3000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Kiran vacche vaaram 500 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Satish bhai nundi veyyi aidhu vandalu ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish bhai",
+      "amount": 1500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Krishna gaaru ki 1200 goods ichamu credit meeda",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna gaaru",
+      "amount": 1200,
+      "direction": "receivable",
+      "event_type": "credit_sale"
+    }
+  },
+  {
+    "text": "Need to pay 4500 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh Mills",
+      "amount": 4500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "మహేష్ కి 5000 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "మహేష్",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 2000 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "సురేష్",
+      "amount": 2000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Satish Mills promised to clear 6000 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish Mills",
+      "amount": 6000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Need to pay 15000 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh Medicals",
+      "amount": 15000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Pending payment of 1500 from Balu Electricals",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu Electricals",
+      "amount": 1500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Last month 1200 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran",
+      "amount": 1200,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Rajesh bhai nundi enimidi vela ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh bhai",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Last month 12000 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi garu",
+      "amount": 12000,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Advance payment of 3000 transferred to Priya Agency",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya Agency",
+      "amount": 3000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Last month 12000 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish garu",
+      "amount": 12000,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Priya gaaru ki 2000 goods ichamu credit meeda",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya gaaru",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "credit_sale"
+    }
+  },
+  {
+    "text": "Supplier ki rendu vela ivvali next week",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh gaaru",
+      "amount": 2000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "మహేష్ కి 5000 అడ్వాన్స్ పంపాము",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "మహేష్",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Venkat anna Friday ki nalabhai vela ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat anna",
+      "amount": 40000,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Pending payment of 20000 from Mahesh Electricals",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh Electricals",
+      "amount": 20000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "వెంకట్ కి 5000 అడ్వాన్స్ పంపాము",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "వెంకట్",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Ramesh mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Lakshmi Distributors paid 15000 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi Distributors",
+      "amount": 15000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "రమేష్ కి 500 అడ్వాన్స్ పంపాము",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "రమేష్",
+      "amount": 500,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Krishna ki 1000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna",
+      "amount": 1000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Priya gaaru ki 4800 pending undi",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya gaaru",
+      "amount": 4800,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Satish mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Need to pay 4500 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu Traders",
+      "amount": 4500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Anand Cloths promised to clear 10000 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand Cloths",
+      "amount": 10000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 3000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Anand ki 1000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand",
+      "amount": 1000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Need to pay 6000 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh Medicals",
+      "amount": 6000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Satish anna nundi 25000 ravali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish anna",
+      "amount": 25000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Need to pay 1500 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas Mills",
+      "amount": 1500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Last month 5000 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish gaaru",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Supplier ki 3500 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh bhai",
+      "amount": 3500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Last month 4800 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand bhai",
+      "amount": 4800,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Supplier ki padhaidhu vela ivvali kritham nela",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas anna",
+      "amount": 15000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Priya anna last month ki padhi vela istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya anna",
+      "amount": 10000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "లక్ష్మి ట్రేడర్స్ కి 500 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "లక్ష్మి ట్రేడర్స్",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Rajesh Mills promised to clear 15000 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh Mills",
+      "amount": 15000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Supplier ki 8000 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi garu",
+      "amount": 8000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 3000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Need to pay 6000 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh Mills",
+      "amount": 6000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "సురేష్ కి 8000 అడ్వాన్స్ పంపాము",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "సురేష్",
+      "amount": 8000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "లక్ష్మి ట్రేడర్స్ నిన్న 8000 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "లక్ష్మి ట్రేడర్స్",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Supplier ki rendu vela ivvali vache vaaram",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat",
+      "amount": 2000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Naresh nundi 3000 rupailu raavali",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Venkat Agency promised to clear 6000 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat Agency",
+      "amount": 6000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Kiran gaaru ninna 8000 gpay dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran gaaru",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Pending payment of 15000 from Naresh Stores",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh Stores",
+      "amount": 15000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Priya Friday ki remaining 2000 istanu annadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Satish padhaidhu vela ivvali last month",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish",
+      "amount": 15000,
+      "direction": "receivable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "లక్ష్మి ట్రేడర్స్ కి 500 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "లక్ష్మి ట్రేడర్స్",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Need to pay 6000 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh Kirana",
+      "amount": 6000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Pending payment of 3000 from Satish Mills",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish Mills",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 5000 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "లక్ష్మి ట్రేడర్స్",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Suresh mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Balu bhai nundi 3500 ravali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu bhai",
+      "amount": 3500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Ramesh vacche vaaram 500 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Priya ninnaa 3000 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Priya vacche vaaram 8000 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Supplier ki 2500 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh akka",
+      "amount": 2500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Mahesh gaaru nundi mudu vandalu ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh gaaru",
+      "amount": 300,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Ravi garu yesterday ki rendu vela five hundred istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi garu",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Naresh akka Friday ki remaining 750 istanu annadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh akka",
+      "amount": 750,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Suresh bhai Friday ki remaining 12000 istanu annadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh bhai",
+      "amount": 12000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Satish ki 1000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish",
+      "amount": 1000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Mahesh Electricals promised to clear 4500 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh Electricals",
+      "amount": 4500,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Advance payment of 20000 transferred to Kiran Agency",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran Agency",
+      "amount": 20000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Anand ninnaa 3000 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Rajesh bhai last month nalabhai vela ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh bhai",
+      "amount": 40000,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Suresh mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Anand Distributors promised to clear 3000 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand Distributors",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Advance payment of 1500 transferred to Anand Medicals",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand Medicals",
+      "amount": 1500,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Supplier ki iravai aidhu vela ivvali next Monday",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna bhai",
+      "amount": 25000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Balu bhai ki 25000 pending undi",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu bhai",
+      "amount": 25000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 1000 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "మహేష్",
+      "amount": 1000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Mahesh Friday ki ki mudu vela istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Suresh next week veyyi aidhu vandalu ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh",
+      "amount": 1500,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Supplier ki nalugu vela ivvali monna",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu akka",
+      "amount": 4000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Advance payment of 6000 transferred to Suresh Electricals",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh Electricals",
+      "amount": 6000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 10000 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "లక్ష్మి ట్రేడర్స్",
+      "amount": 10000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Need to pay 1500 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh Cloths",
+      "amount": 1500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 8000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "రమేష్ నిన్న 500 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "రమేష్",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "సురేష్ నిన్న 2000 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "సురేష్",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 500",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "ప్రియ మెడికల్స్ కి 3000 అడ్వాన్స్ పంపాము",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "ప్రియ మెడికల్స్",
+      "amount": 3000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Rajesh ki 5000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Need to pay 4500 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh Electricals",
+      "amount": 4500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Last month 3500 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh garu",
+      "amount": 3500,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Last month 1200 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna garu",
+      "amount": 1200,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Rajesh ki 500 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh",
+      "amount": 500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Supplier ki 2000 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh akka",
+      "amount": 2000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Suresh mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Advance payment of 20000 transferred to Rajesh Agency",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh Agency",
+      "amount": 20000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Priya garu ninna 1200 online dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya garu",
+      "amount": 1200,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Supplier ki yaabhai vela ivvali monna",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh bhai",
+      "amount": 50000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "ప్రియ మెడికల్స్ శుక్రవారం కి 1000 ఇస్తాను అన్నాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "ప్రియ మెడికల్స్",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "సురేష్ శుక్రవారం కి 5000 ఇస్తాను అన్నాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "సురేష్",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Supplier ki 25000 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand garu",
+      "amount": 25000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Need to pay 1500 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas Agency",
+      "amount": 1500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Krishna Mills paid 4500 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna Mills",
+      "amount": 4500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Ramesh Cloths paid 6000 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh Cloths",
+      "amount": 6000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Last month 25000 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh akka",
+      "amount": 25000,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "ప్రియ మెడికల్స్ కి 5000 అడ్వాన్స్ పంపాము",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "ప్రియ మెడికల్స్",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Satish mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Last month 5000 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh anna",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "రమేష్ కి 8000 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "రమేష్",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 3000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Balu ki 12000 pending undi",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu",
+      "amount": 12000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Mahesh ninnaa 5000 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "లక్ష్మి ట్రేడర్స్ కి 8000 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "లక్ష్మి ట్రేడర్స్",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Last month 750 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas anna",
+      "amount": 750,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 3000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Suresh akka next Monday ki veyyi istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh akka",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Naresh akka monna ki padhi vela istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh akka",
+      "amount": 10000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Satish ninnaa 5000 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Need to pay 10000 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu Kirana",
+      "amount": 10000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Need to pay 1500 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh Distributors",
+      "amount": 1500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Krishna anna nundi nalabhai vela ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna anna",
+      "amount": 40000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Supplier ki oka laksha ivvali Friday ki",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat garu",
+      "amount": 100000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Ravi anna nundi 5000 ravali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi anna",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Ravi mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Ravi bhai Friday ki remaining 8000 istanu annadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi bhai",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Satish ninnaa 2000 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Supplier ki iravai aidhu vela ivvali Friday ki",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh",
+      "amount": 25000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Advance payment of 10000 transferred to Ravi Mills",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi Mills",
+      "amount": 10000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "సురేష్ నిన్న 3000 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "సురేష్",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Satish Kirana paid 20000 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish Kirana",
+      "amount": 20000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Rajesh Distributors promised to clear 4500 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh Distributors",
+      "amount": 4500,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Lakshmi anna nundi 5000 ravali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi anna",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Priya anna nundi enimidi vandalu ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya anna",
+      "amount": 800,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Rajesh anna padhaidhu vela ivvali next week",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh anna",
+      "amount": 15000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Rajesh anna Friday ki remaining 25000 istanu annadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh anna",
+      "amount": 25000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Priya ki 3000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya",
+      "amount": 3000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "వెంకట్ శుక్రవారం కి 1000 ఇస్తాను అన్నాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "వెంకట్",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Supplier ki 2000 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh akka",
+      "amount": 2000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Krishna anna next Monday ki mudu vela istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Krishna anna",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Satish ki 5000 pending undi",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Naresh anna ee roju ki nalugu vandalu istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh anna",
+      "amount": 400,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Naresh garu nundi 12000 ravali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh garu",
+      "amount": 12000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "మహేష్ నిన్న 500 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "మహేష్",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Advance payment of 4500 transferred to Mahesh Electricals",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh Electricals",
+      "amount": 4500,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Supplier ki 5000 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Supplier ki padhaidhu vela ivvali today",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas akka",
+      "amount": 15000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 1000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Satish gaaru last month ki veyyi aidhu vandalu istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish gaaru",
+      "amount": 1500,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Naresh ki 3000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh",
+      "amount": 3000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 3000 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "మహేష్",
+      "amount": 3000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Supplier ki 5000 ivvali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat garu",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Naresh garu ninna ki aidhu vela istanu annadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh garu",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "payment_commitment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "రమేష్ నిన్న 5000 ఇచ్చాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "రమేష్",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Srinivas anna nundi 750 ravali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas anna",
+      "amount": 750,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Kiran bhai Friday ki remaining 3500 istanu annadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran bhai",
+      "amount": 3500,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 8000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Mahesh vacche vaaram 2000 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Supplier ki aidhu vela ivvali ee roju",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas gaaru",
+      "amount": 5000,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Srinivas anna nundi 750 ravali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas anna",
+      "amount": 750,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Pending payment of 20000 from Balu Hardware",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu Hardware",
+      "amount": 20000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Kiran Kirana paid 15000 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran Kirana",
+      "amount": 15000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Last month 25000 already ichesa",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ramesh garu",
+      "amount": 25000,
+      "direction": "payable",
+      "event_type": "payment_made"
+    }
+  },
+  {
+    "text": "Srinivas mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Naresh garu ninna 2000 online dwara ichadu",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh garu",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Advance payment of 15000 transferred to Naresh Kirana",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh Kirana",
+      "amount": 15000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "వెంకట్ శుక్రవారం కి 1000 ఇస్తాను అన్నాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "వెంకట్",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Srinivas ki 2000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 2000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Advance payment of 20000 transferred to Lakshmi Traders",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi Traders",
+      "amount": 20000,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Mahesh Traders paid 6000 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh Traders",
+      "amount": 6000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Ravi ki 1000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi",
+      "amount": 1000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Srinivas ninnaa 2500 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Lakshmi mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "సురేష్ శుక్రవారం కి 2500 ఇస్తాను అన్నాడు",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "సురేష్",
+      "amount": 2500,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Venkat vacche vaaram 1000 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 10000 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "లక్ష్మి ట్రేడర్స్",
+      "amount": 10000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Balu vacche vaaram 500 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Suresh nundi 500 rupailu raavali",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Suresh",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Srinivas ki 3000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 3000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Balu mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 10000 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "వెంకట్",
+      "amount": 10000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Anand bhai nundi yedu vandalu ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand bhai",
+      "amount": 700,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Srinivas today veyyi ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Rajesh vacche vaaram 1000 isthannadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Rajesh",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "సప్లయర్ కి 1000 ఇవ్వాలి",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "లక్ష్మి ట్రేడర్స్",
+      "amount": 1000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Balu Electricals promised to clear 10000 next week",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu Electricals",
+      "amount": 10000,
+      "direction": "receivable",
+      "event_type": "payment_commitment"
+    }
+  },
+  {
+    "text": "Mahesh garu kritham nela veyyi aidhu vandalu ichadu",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh garu",
+      "amount": 1500,
+      "direction": "receivable",
+      "event_type": "partial_payment",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Naresh garu ki 8000 pending undi",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh garu",
+      "amount": 8000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Srinivas nundi 2000 rupailu raavali",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Srinivas",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "సురేష్ కి 500 అడ్వాన్స్ పంపాము",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "సురేష్",
+      "amount": 500,
+      "direction": "payable",
+      "event_type": "advance_payment"
+    }
+  },
+  {
+    "text": "Mahesh ninnaa 1000 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh",
+      "amount": 1000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Mahesh mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Lakshmi ki 2000 pending undi",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Lakshmi",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Naresh Electricals paid 1500 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh Electricals",
+      "amount": 1500,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "సురేష్ కి 2000 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "సురేష్",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Venkat Stores paid 20000 yesterday via UPI",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat Stores",
+      "amount": 20000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Priya gaaru ki 5000 pending undi",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya gaaru",
+      "amount": 5000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "మహేష్ కి 3000 పెండింగ్ ఉంది",
+    "language_category": "telugu_script",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "మహేష్",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Anand ninnaa 3000 icheysa",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand",
+      "amount": 3000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Mahesh akka nundi nalugu vela ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Mahesh akka",
+      "amount": 4000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Balu ki 2000 ivvaali ra",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Balu",
+      "amount": 2000,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Supplier ki veyyi aidhu vandalu ivvali yesterday",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Naresh akka",
+      "amount": 1500,
+      "direction": "payable",
+      "event_type": "payable_obligation",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Anand nundi veyyi aidhu vandalu ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Anand",
+      "amount": 1500,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "EVENT_DATE"
+    }
+  },
+  {
+    "text": "Venkat gaaru nundi padhaidhu vela ravali",
+    "language_category": "spoken_telugu_numerals",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Venkat gaaru",
+      "amount": 15000,
+      "direction": "receivable",
+      "event_type": "receivable_invoice",
+      "temporal_role": "DUE_DATE"
+    }
+  },
+  {
+    "text": "Priya mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya",
+      "amount": 500,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  },
+  {
+    "text": "Customer cash ichadu but bill generate cheyyaledu 2000",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Kiran",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "partial_payment"
+    }
+  },
+  {
+    "text": "Ravi anna nundi 4800 ravali",
+    "language_category": "code_mixed_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Ravi anna",
+      "amount": 4800,
+      "direction": "receivable",
+      "event_type": "receivable_invoice"
+    }
+  },
+  {
+    "text": "Need to pay 1500 to supplier by next Friday",
+    "language_category": "english_clean",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Satish Distributors",
+      "amount": 1500,
+      "direction": "payable",
+      "event_type": "payable_obligation"
+    }
+  },
+  {
+    "text": "Priya mottham dabbulu ichesadu",
+    "language_category": "noisy_code_mixed",
+    "is_synthetic": true,
+    "ground_truth": {
+      "actor": "Priya",
+      "amount": 2000,
+      "direction": "receivable",
+      "event_type": "full_settlement"
+    }
+  }
+]

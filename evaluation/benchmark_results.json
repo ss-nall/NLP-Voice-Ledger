@@ -1,0 +1,46 @@
+{
+  "benchmark_timestamp": "2026-09-13 21:37:33",
+  "total_test_samples": 350,
+  "overall_exact_match_pct": 89.43,
+  "overall_amount_match_pct": 94.86,
+  "overall_direction_accuracy_pct": 94.57,
+  "overall_event_type_accuracy_pct": 92.29,
+  "avg_end_to_end_latency_ms": 6.35,
+  "category_breakdown": {
+    "telugu_script": {
+      "samples": 57,
+      "exact_match_pct": 100.0,
+      "amount_match_pct": 100.0,
+      "direction_match_pct": 100.0,
+      "avg_latency_ms": 7.89
+    },
+    "english_clean": {
+      "samples": 65,
+      "exact_match_pct": 100.0,
+      "amount_match_pct": 100.0,
+      "direction_match_pct": 100.0,
+      "avg_latency_ms": 7.24
+    },
+    "spoken_telugu_numerals": {
+      "samples": 69,
+      "exact_match_pct": 89.86,
+      "amount_match_pct": 100.0,
+      "direction_match_pct": 89.86,
+      "avg_latency_ms": 5.71
+    },
+    "code_mixed_clean": {
+      "samples": 77,
+      "exact_match_pct": 100.0,
+      "amount_match_pct": 100.0,
+      "direction_match_pct": 100.0,
+      "avg_latency_ms": 5.85
+    },
+    "noisy_code_mixed": {
+      "samples": 82,
+      "exact_match_pct": 63.41,
+      "amount_match_pct": 78.05,
+      "direction_match_pct": 85.37,
+      "avg_latency_ms": 5.56
+    }
+  }
+}
