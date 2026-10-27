@@ -15,25 +15,43 @@ class DialogueState(str, Enum):
     CONFIRMING_CONTRADICTION = "CONFIRMING_CONTRADICTION"
     COMMITTED = "COMMITTED"
 
-# Telugu and Romanized Pronoun Maps
+# Multi-Lingual Pronoun Maps across 8 Indian Languages & English
 PRONOUNS_MALE = [
     'అతను', 'అతనికి', 'అతడికి', 'ఆయన', 'ఆయనకి', 'వాడు', 'వాడికి',
-    'athanu', 'athaniki', 'aayana', 'vaadu', 'vaadiki', 'he', 'him'
+    'athanu', 'athaniki', 'aayana', 'vaadu', 'vaadiki',
+    'அவன்', 'அவனுக்கு', 'அவர்', 'அவருக்கு', 'avan', 'avanukku', 'avar', 'avarukku',
+    'उसने', 'उसको', 'उसे', 'वह', 'वो', 'usne', 'usko', 'use', 'woh', 'wo',
+    'ಅವನು', 'ಅವನಿಗೆ', 'ಅವರು', 'ಅವರಿಗೆ', 'avanu', 'avanige', 'avaru', 'avarige',
+    'അവൻ', 'അവന്', 'അവർ', 'അവർക്ക്', 'avan', 'avanu', 'avar', 'avarkku',
+    'اس نے', 'اس کو', 'اسے', 'وہ',
+    'તેણે', 'તેને', 'તેઓ', 'તેમને', 'tene', 'temne', 'teo',
+    'he', 'him'
 ]
 
 PRONOUNS_FEMALE = [
-    'ఆమె', 'ఆమెకి', 'ఆవిడ', 'ఆవిడకి',
-    'aame', 'aameki', 'aavida', 'she', 'her'
+    'ఆమె', 'ఆమెకి', 'ఆవిడ', 'ఆవిడకి', 'aame', 'aameki', 'aavida',
+    'அவள்', 'அவளுக்கு', 'aval', 'avalukku',
+    'ಅವಳು', 'ಅವಳಿಗೆ', 'avalu', 'avalige',
+    'അവൾ', 'അവൾക്ക്', 'aval', 'avalkku',
+    'તેણી', 'તેણીને', 'teni',
+    'she', 'her'
 ]
 
 PRONOUNS_PLURAL_OR_HONORIFIC = [
-    'వారు', 'వారికి', 'వాళ్లు', 'వాళ్లకి',
-    'vaaru', 'vaariki', 'vaallu', 'vaallaki', 'they', 'them'
+    'వారు', 'వారికి', 'వాళ్లు', 'వాళ్లకి', 'vaaru', 'vaariki', 'vaallu', 'vaallaki',
+    'அவர்கள்', 'அவர்களுக்கு', 'avargal', 'avargalukku',
+    'उन्होंने', 'उनको', 'उन्हें', 'unhone', 'unko', 'unhe',
+    'ಅವರು', 'ಅವರಿಗೆ', 'avaru', 'avarige',
+    'അവർ', 'അവർക്ക്', 'avar', 'avarkku',
+    'انہوں نے', 'ان کو', 'انہیں',
+    'તેઓ', 'તેમને', 'teo', 'temne',
+    'they', 'them'
 ]
 
 REMAINING_AMOUNT_KEYWORDS = [
     'మిగిలిన', 'మిగిలినది', 'మిగతా', 'బాకీ మొత్తం', 'పూర్తి బాకీ',
-    'migilina', 'migatha', 'remaining', 'balance', 'full amount', 'cleared'
+    'migilina', 'migatha', 'remaining', 'balance', 'full amount', 'cleared',
+    'மீதமுள்ள', 'பாக்கி தொகை', 'बाकी', 'बचा हुआ', 'ಉಳಿದ', 'ബാക്കി', 'باقی', 'બાકી રહેલ'
 ]
 
 class DialogueSessionState:

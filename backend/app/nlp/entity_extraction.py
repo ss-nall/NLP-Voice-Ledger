@@ -1,103 +1,173 @@
 """
-Financial Named Entity Recognition (NER) Module.
-Extracts ACTOR, BUSINESS, AMOUNT, CURRENCY, PAYMENT_METHOD, PRODUCT, STATUS, and INVOICE.
-Combines rule-based grammar patterns, lexicon matching, and token position heuristics.
+Multi-Lingual Financial Named Entity Recognition (NER) Module.
+Extracts ACTOR, BUSINESS, AMOUNT, CURRENCY, PAYMENT_METHOD, PRODUCT, STATUS, and INVOICE
+across 8 Indian Languages: English, Telugu, Tamil, Hindi, Kannada, Malayalam, Urdu, and Gujarati.
+Combines rule-based grammar patterns, multi-lingual lexicon matching, and token position heuristics.
 """
 
 import re
 from typing import Dict, Any, List, Optional
-from backend.app.nlp.telugu_lexicon import (
-    TELUGU_HONORIFICS, PAYMENT_METHODS, BUSINESS_TERMS, TELUGU_NUMERALS
+from backend.app.nlp.indic_lexicon import (
+    ALL_HONORIFICS, ALL_PAYMENT_METHODS, ALL_BUSINESS_TERMS, ALL_INDIC_NUMERALS
 )
-from backend.app.nlp.speech_processor import TeluguSpokenNumberParser
+from backend.app.nlp.speech_processor import IndicSpokenNumberParser
+
+# Unicode Character Range for 8 Languages
+INDIC_SCRIPTS_CHAR_CLASS = r'a-zA-Z\u0C00-\u0C7F\u0B80-\u0BFF\u0900-\u097F\u0C80-\u0CFF\u0D00-\u0D7F\u0600-\u06FF\u0A80-\u0AFF'
 
 KNOWN_BUSINESS_KEYWORDS = {
+    # English
     "traders", "enterprises", "stores", "kirana", "electricals", "hardware", "agency",
     "distributors", "mills", "wholesalers", "medicals", "cloths", "shop", "mart",
     "fertilizers", "automobiles", "services", "general", "supermarket", "jewellers",
     "textiles", "bakery", "hotel", "restaurant", "stationery", "trading", "industries",
-    "ట్రేడర్స్", "స్టోర్స్", "కిరాణా", "ఎంటర్‌ప్రైజెస్", "ఏజెన్సీ", "టెక్స్‌టైల్స్"
+    # Telugu
+    "ట్రేడర్స్", "స్టోర్స్", "కిరాణా", "ఎంటర్‌ప్రైజెస్", "ఏజెన్సీ", "టెక్స్‌టైల్స్", "మెడికల్స్",
+    # Tamil
+    "டிரேடர்ஸ்", "ஸ்டோர்ஸ்", "மளிகை", "ஏஜென்சி", "டெக்ஸ்டைல்ஸ்", "மெடிக்கல்ஸ்", "ஹார்ட்வேர்",
+    # Hindi
+    "ट्रेडर्स", "स्टोर्स", "किराना", "एंटरप्राइजेज", "एजेंसी", "टेक्सटाइल्स", "मेडिकल्स", "हार्डवेयर",
+    # Kannada
+    "ಟ್ರೇಡರ್ಸ್", "ಸ್ಟೋರ್ಸ್", "ಕಿರಣ", "ಅಂಗಡಿ", "ಉದ್ಯಮ",
+    # Malayalam
+    "ട്രേഡേഴ്സ്", "സ്റ്റോർസ്", "സൂപ്പർമാർക്കറ്റ്", "കട",
+    # Urdu
+    "ٹریڈرز", "اسٹورز", "ایجنسی", "دکان", "کاروبار",
+    # Gujarati
+    "ટ્રેડર્સ", "સ્ટોર્સ", "દુકાન", "વેપાર", "પેઢી"
 }
 
 EXCLUDED_ACTOR_WORDS = {
-    # Days of the week
+    # Days of the week (All 8 Languages)
     "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
-    "somavaram", "mangalavaram", "budhavaram", "guruvaram", "sukravaram", "sanivaram", "adivaram",
+    "somavaram", "mangalavaram", "budhavaram", "guruvaram", "sukravaram", "sanivaram", "adivaram", "aadivaram",
+    "thingal", "sevvaai", "budhan", "viyazhan", "velli", "sani", "njaayiru",
+    "somwar", "mangalwar", "budhwar", "guruwar", "veervar", "shukrawar", "shaniwar", "raviwar", "itwar",
+    "somavaara", "mangalavaara", "budhavaara", "guruvaara", "shukravaara", "shanivaara", "bhanuvaara",
+    "thinkal", "chovva", "budhanaazhcha", "vyaazham", "velliaazhcha", "shaniaazhcha", "njaayaraazhcha",
+    "peer", "jumerat", "jumma", "hafta",
+    "somvar", "mangalvar", "budhvar", "guruvar", "shukravar", "shanivar", "ravivar",
     "సోమవారం", "మంగళవారం", "బుధవారం", "గురువారం", "శుక్రవారం", "శనివారం", "ఆదివారం",
-    # Temporal keywords
+    "திங்கள்", "செவ்வாய்", "புதன்", "வியாழன்", "வெள்ளி", "சனி", "ஞாயிறு",
+    "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "वीरवार", "शुक्रवार", "शनिवार", "रविवार", "इतवार",
+    "ಸೋಮವಾರ", "ಮಂಗಳವಾರ", "ಬುಧವಾರ", "ಗುರುವಾರ", "ಶುಕ್ರವಾರ", "ಶನಿವಾರ", "ಭಾನುವಾರ",
+    "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി", "ഞായർ",
+    "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "اتوار",
+    "સોમવાર", "મંગળવાર", "બુધવાર", "ગુરુવાર", "શુક્રવાર", "શનિવાર", "રવિવાર",
+    
+    # Temporal keywords across all 8 languages
     "yesterday", "today", "tomorrow", "ninna", "monna", "eroju", "ee roju", "nedu", "repu", "ellundi", "yelundi",
+    "netru", "nethu", "mundhanal", "indru", "iniku", "innaiku", "naalai", "naalaikku", "marunaal",
+    "kal", "aaj", "parson", "parso", "narson", "beeta kal", "aane wala kal",
+    "ninne", "ivathu", "naale", "naadidhu", "innale", "innu", "mattedhu", "kale", "aaje", "paradive",
     "next", "last", "this", "vache", "vacche", "poyina", "kritham", "vaaram", "varam", "week", "nela", "month", "year",
+    "adutha", "kadantha", "pona", "maadham", "masam", "agle", "pichle", "is", "hafte", "saptah", "mahine",
+    "mundina", "hindina", "tingalu", "kazhinja", "aazhcha", "aavta", "pachhala", "gaya", "athwade", "mahine", "varsh",
     "morning", "evening", "night", "sayantram", "udayam", "madyanam", "afternoon", "daily",
+    "காலை", "மாலை", "இரவு", "शाम", "दोपहर", "रात",
     "నిన్న", "మొన్న", "ఈరోజు", "రేపు", "ఎల్లుండి", "వచ్చే", "వారం", "నెల", "సంవత్సరం",
-    # Numbers & Spoken numerals
-    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "hundred", "thousand", "lakh", "crore",
-    "okati", "rendu", "mudu", "moodu", "nalugu", "aidhu", "ayidu", "aaru", "yedu", "edu", "enimidi", "thommidi", "tommidi", "padi", "padhi",
-    "vanda", "vandalu", "vandala", "nooru", "veyyi", "vela", "velu", "renduvela", "mooduvela", "naaluguvela", "aiduvela", "padivela", "iravaivela",
-    "laksha", "lakshalu", "koti", "kotlu", "k",
-    "ఒకటి", "ఒక", "రెండు", "మూడు", "నాలుగు", "ఐదు", "ఆరు", "ఏడు", "ఎనిమిది", "తొమ్మిది", "పది", "పదకొండు", "పన్నెండు",
-    "ఇరవై", "ముప్పై", "నలభై", "యాభై", "అరవై", "డెబ్బై", "ఎనభై", "తొంభై",
-    "వంద", "వందలు", "వందల", "నూరు", "ఇన్నూరు", "మున్నూరు", "నానూరు", "ఐనూరు",
-    "వేయి", "వెయ్యి", "వేలు", "వేల", "రెండువేలు", "రెండువేల", "మూడువేలు", "మూడువేల", "నాలుగువేలు", "నాలుగువేల",
-    "ఐదువేలు", "ఐదువేల", "ఆరువేలు", "ఆరువేల", "ఏడువేలు", "ఏడువేల", "ఎనిమిదివేలు", "ఎనిమిదివేల", "తొమ్మిదివేలు", "తొమ్మిదివేల",
-    "పదివేలు", "పదివేల", "పదిహేనువేలు", "పదిహేనువేల", "ఇరవైవేలు", "ఇరవైవేల", "ముప్పైవేలు", "ముప్పైవేల", "నలభైవేలు", "నలభైవేల",
-    "యాభైవేలు", "యాభైవేల", "అరవైవేలు", "అరవైవేల", "డెబ్బైవేలు", "డెబ్బైవేల", "ఎనభైవేలు", "ఎనభైవేల", "తొంభైవేలు", "తొంభైవేల",
-    "లక్ష", "లక్షలు", "లక్షల", "రెండు లక్షలు", "రెండు లక్షల", "కోటి", "కోట్లు", "కోట్ల",
-    # Financial transaction terms
+    "நேற்று", "இன்று", "நாளை", "அடுத்த", "கடந்த", "போன", "வாரம்", "மாதம்",
+    "कल", "आज", "परसों", "अगले", "पिछले", "हफ्ते", "महीने", "साल",
+    "ನೆನ್ನೆ", "ಇವತ್ತು", "ನಾಳೆ", "ನಾಡಿದ್ದು", "ಮುಂದಿನ", "ವಾರ", "ತಿಂಗಳು",
+    "ഇന്നലെ", "ഇന്ന്", "നാളെ", "മറ്റന്നാൾ", "അടുത്ത", "ആഴ്ച", "മാസം",
+    "کل", "آج", "پرسوں", "اگلے", "ہفتے", "مہینے", "سال",
+    "કાલે", "આજે", "પરમ દિવસે", "આવતા", "અઠવાડિયે", "મહિને", "વર્ષ",
+    
+    # Financial terms
     "cash", "credit", "debit", "online", "gpay", "phonepe", "paytm", "upi", "cheque", "bank",
-    "transfer", "account", "balance", "total", "amount", "money", "rupees", "rs", "inr", "dabbulu", "rupayalu", "chillara",
-    "remaining", "baki", "pending", "advance", "udhari", "discount", "bill", "invoice", "inv",
-    "payment", "due", "refund", "interest", "saraku", "maal", "saman", "goods", "stock", "khata",
-    "already", "direct", "directly", "settled", "done", "complete", "completed", "full", "pura",
+    "transfer", "account", "balance", "total", "amount", "money", "rupees", "rs", "inr",
+    "dabbulu", "rupayalu", "chillara", "panam", "kaasu", "paise", "rupaye", "rokda", "rokkha", "rokad", "raqam",
+    "remaining", "baki", "baaki", "pending", "advance", "udhari", "udhar", "discount", "bill", "invoice", "inv",
+    "payment", "due", "refund", "interest", "saraku", "sarakku", "porul", "maal", "saman", "samaan", "goods", "stock", "khata", "hisaab",
+    "already", "direct", "directly", "settled", "done", "complete", "completed", "full", "pura", "poora",
     "ఖాతా", "బాకీ", "రూపాయలు", "అడ్వాన్స్", "నగదు", "చెల్లింపు",
-    # Verbs & Verb forms
-    "ivvali", "ivaali", "ivali", "ivvaali", "evali", "evvali", "eeyali", "chellinchali", "kattali", "kattalsindi", "kattaali", "ivvalasindi", "ivvalsindi",
-    "ravali", "raavali", "ravalsi", "ravalsindi", "teesukovali", "teeskovali", "theeskovali", "vasool", "vasul", "collect", "ravanundi", "vachindi", "vachindhi", "vachayi", "vacchesindi", "vacchindi", "andindi", "cherindi",
-    "ichadu", "ichindi", "icharu", "ichanu", "icha", "ichesadu", "ichesa", "ichesanu", "icheysadu", "ichesthadu", "ichestha", "ichaanu", "ichesindi", "ichessaru",
-    "pampadu", "pampindi", "pamparu", "pampanu", "pampa", "pampaadu", "pampinchadu", "pampesadu", "pampesa",
-    "kattadu", "kattindi", "kattaru", "kattanu", "katta", "kattesa", "kattesanu", "kattesadu", "kattesindi", "kattesaru",
-    "chellinchadu", "chellincha", "chellinchanu", "chellincharu", "chellinchindi", "chellinchesadu",
-    "chesadu", "chesindi", "chesaru", "chesanu", "chesa", "annadu", "cheppadu", "istanu", "istha", "isthadu", "isthanannadu", "isthannadu",
-    "give", "pay", "paid", "receive", "received", "sent", "send", "take", "took", "need", "have", "must", "will", "owes", "owe", "collected", "bought", "sold", "transferred",
-    "record", "add", "create", "note", "entry", "book", "show", "view", "get", "check", "update", "clear", "list", "settle", "motham",
-    "customer", "supplier", "dealer", "vendor",
-    "ఇవ్వాలి", "రావాలి", "ఇచ్చాడు", "ఇచ్చింది", "ఇచ్చారు", "ఇచ్చేశాడు", "ఇచ్చేసాడు", "ఇచ్చేశారు", "ఇచ్చేసింది",
-    "చెల్లించాలి", "చెల్లించాడు", "చెల్లించింది", "చెల్లించారు", "చెల్లించేశాడు", "చెల్లించేశారు",
-    "కట్టాలి", "కట్టాడు", "కట్టింది", "కట్టారు", "కట్టేసా", "కట్టేశాను", "కట్టేశాడు", "కట్టేసాడు", "కట్టేశారు", "కట్టేసింది",
-    "వచ్చింది", "వచ్చాయి", "అందింది", "చేరింది", "తీసుకోవాలి", "వసూలు", "కలెక్ట్", "డ్యూ",
-    "పంపాము", "పంపాను", "పంపాం", "పంపాడు", "పంపింది", "పంపారు", "పంపించేశాడు",
-    "అన్నాడు", "చెప్పాడు", "ట్రాన్స్ఫర్", "పే", "సెటిల్", "క్లియర్", "మొత్తం",
-    # Prepositions & Postpositions & Particles
-    "ki", "ku", "kante", "nundi", "nunchi", "daggara", "daggarnundi", "vadda", "tho", "to", "from", "for", "in", "on", "at", "by", "with", "of", "into",
-    "ga", "ani", "undhi", "undi", "unna", "unnayi", "unnam", "kadha", "ra", "andi", "gurinchi", "meeda", "lo",
-    "కి", "కు", "నుండి", "నుంచి", "దగ్గర", "వద్ద", "తో", "లో", "గారికి", "అన్నకి",
-    # Pronouns & Possessives
-    "nenu", "naaku", "naku", "na", "naa", "memu", "maaku", "maku", "ma", "maa",
-    "nuvvu", "neeku", "ne", "nee", "meeru", "meeku", "mee", "vaadu", "vaadiki", "atanu", "athanu", "athaniki",
-    "aame", "aameku", "aameki", "vaallu", "vaallaki", "vaaru", "vaariki", "evaru", "evariki", "tanu", "aayana", "aavida",
-    "i", "me", "he", "she", "him", "her", "us", "they", "them",
-    "నాకు", "మాకు", "నా", "మా", "నీకు", "మీకు", "వారికి", "వీరికి", "వాడికి", "ఆమెకు", "ఆమెకి", "అతనికి", "మనకు", "తనకు",
-    "అతను", "ఆమె", "ఆయన", "వాడు", "వారు", "వాళ్ళు", "ఆవిడ", "తాను",
-    # Telugu & Gregorian Months
-    "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december",
-    "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sep", "sept", "oct", "nov", "dec",
-    "జనవరి", "ఫిబ్రవరి", "మార్చి", "ఏప్రిల్", "మే", "జూన్", "జూలై", "ఆగస్టు", "ఆగష్టు", "సెప్టెంబర్", "సెప్టెంబరు", "అక్టోబర్", "అక్టోబరు", "నవంబర్", "నవంబరు", "డిసెంబర్", "డిసెంబరు",
-    "తేదీ", "తేది", "రోజు"
+    "கணக்கு", "பாக்கி", "பணம்", "காசு", "அட்வான்ஸ்", "ரொக்கம்", "செலுத்துதல்",
+    "खाता", "हिसाब", "बाकी", "रुपये", "पैसे", "एडवांस", "रोकड़ा", "उधार",
+    "ಖಾತೆ", "ಬಾಕಿ", "ರೊಕ್ಕ", "പണം", "കണക്ക്", "ബാക്കി", "حساب", "رقم", "ખાતું", "બાકી", "રોકડ",
+    
+    # Verbs across 8 languages (Action, Modal, Communication & Auxiliary)
+    "ivvali", "ravali", "ichadu", "ichindi", "icharu", "ichanu", "pampadu", "kattadu", "chellinchadu", "chesadu", "annadu", "istanu",
+    "istha", "isthanu", "isthadu", "istadu", "isthaaru", "annaru", "cheppadu", "chepparu", "called", "phone", "chellincha", "chellinchanu", "chellincham",
+    "kattesanu", "katta", "kattanu", "kattamu", "pampanu", "pampam", "ichesanu", "ichesha",
+    "tharanum", "varanum", "koduthaar", "koduthen", "thandhaar", "thandhen", "kattinaar", "anuppinaar", "sonnaan", "tharen", "sonnaar", "pesinaan", "tharuven",
+    "dena", "dena hai", "deni hai", "lena", "lena hai", "leni hai", "diya", "diye", "bheja", "chukaya", "bhara", "jama", "bola", "dega", "dunga", "kaha", "bataya",
+    "kotte", "kottaru", "kodabeku", "barabeku", "kodtini", "kodtane", "thagondidini", "helida", "helidru",
+    "koduthu", "thannu", "kodukkanam", "tharanund", "kittiyath", "tharaam", "paranju",
+    "ada kiya", "wasool hua", "lena hai", "dena hai", "de dunga",
+    "aapya", "chukavya", "malya", "levana che", "aapvana che", "aapshe", "aapish", "bolya",
+    "give", "pay", "paid", "receive", "received", "sent", "send", "take", "need", "have", "owes", "owe",
+    "ఇచ్చేశాను", "ఇచ్చేసాను", "ఇచ్చాను", "ఇచ్చాడు", "ఇచ్చింది", "ఇచ్చారు", "ఇవ్వాలి", "రావాలి", "చెల్లించా", "చెల్లించాను", "చెల్లించాం", "చెల్లించారు", "కట్టాడు", "కట్టాను", "పంపాడు", "పంపాను", "కొన్నాను", "కొన్నా", "అమ్మాను", "అమ్మా", "అన్నాడు", "అన్నారు", "ఇస్తాను", "ఇస్తా", "చెప్పాడు",
+    "சொன்னார்", "சொன்னான்", "கொடுத்தேன்", "கொடுத்தார்", "தந்தார்", "தந்தேன்", "கட்டினார்", "வாங்கினேன்", "விற்றேன்", "தருகிறேன்",
+    "दिया", "दिए", "दे दिया", "भेजा", "चुकाया", "भरा", "खरीदा", "बेचा", "बोला", "दूंगा", "देगा",
+    "ಕೊಟ್ಟೆ", "ಕೊಟ್ಟರು", "ಕೊಡಬೇಕು", "ಬರಬೇಕು", "ತಗೊಂಡಿದ್ದೀನಿ", "ಹೇಳಿದ", "ಕೊಡ್ತೀನಿ",
+    "വാങ്ങി", "വിറ്റു", "കൊടുത്തു", "തന്നു", "പറഞ്ഞു", "തരാം",
+    "بولا", "کہا", "دیا", "ادا کیا", "وصول ہوا",
+    "ખરીદ્યા", "વેચ્યા", "આપ્યા", "મળ્યા", "ચૂકવ્યા", "બોલ્યા", "આપીશ",
+
+    # Prepositions, Postpositions & Case Markers
+    "ki", "ku", "kku", "ukku", "ko", "se", "ne", "nundi", "nunchi", "irundhu", "kitta", "idam", "daggara", "vadda", "tho",
+    "ige", "ge", "kke", "inda", "alli", "inu", "lekku", "ninnu", "thante", "mate", "pase", "pasethi", "thi", "keliye",
+    "to", "from", "for", "in", "on", "at", "by", "with", "of", "into",
+    "కి", "కు", "నుండి", "నుంచి", "తో", "లో", "దగ్గర", "వద్ద",
+    "க்கு", "உக்கு", "இருந்து", "கிட்ட", "இடம்",
+    "को", "से", "ने", "में", "पे", "पर", "के लिए", "के पास",
+    "ಗೆ", "ಇಗೆ", "ಕ್ಕೆ", "ಇಂದ", "ಅಲ್ಲಿ",
+    "ക്ക്", "ഇന്", "ലേക്ക്", "നിന്ന്",
+    "کو", "سے", "نے", "کے لیے", "کے پاس",
+    "ને", "થી", "પાસે", "માટે", "પાસેથી",
+    
+    # Pronouns across 8 languages (Native Scripts + Romanized)
+    "nenu", "naaku", "naku", "memu", "maaku", "nuvvu", "meeru", "atanu", "aame", "vaaru", "vaallu", "ayana", "aayana", "vaadu", "vaadiki", "athanu", "athaniki",
+    "నేను", "నాకు", "నాకి", "నాకొ", "నన్ను", "మేము", "మాకు", "నువ్వు", "మీరు", "అతను", "అతనికి", "ఆమె", "ఆమెకి", "వారు", "వారికి", "వాళ్ళు", "వాళ్లకి", "ఆయన", "ఆయనకి", "వాడు", "వాడికి",
+    "naan", "enakku", "naanga", "engalukku", "neenga", "ungalukku", "avan", "avar", "avargal", "aval",
+    "நான்", "எனக்கு", "நாங்கள்", "எங்களுக்கு", "நீ", "நீங்கள்", "உங்களுக்கு", "அவன்", "அவனுக்கு", "அவள்", "அவளுக்கு", "அவர்", "அவர்களுக்கு",
+    "main", "mujhe", "mujhko", "hum", "humko", "humein", "aap", "tum", "usne", "unhone", "woh", "wo", "isse", "unse",
+    "मैं", "मुझे", "मुझको", "हम", "हमको", "हमें", "तू", "तुम", "आप", "उसने", "उन्होंने", "वह", "वो",
+    "naanu", "nanage", "naavu", "namage", "avaru", "avanu", "avalu", "avarige", "avanige", "avalige",
+    "ನಾನು", "ನನಗೆ", "ನಾವು", "ನಮಗೆ", "ಅವನು", "ಅವನಿಗೆ", "ಅವಳು", "ಅವಳಿಗೆ", "ಅವರು", "ಅವರಿಗೆ",
+    "njan", "enikku", "njangal", "njangalkku", "avan", "avalkku", "avar", "avarkku",
+    "ഞാൻ", "എനിക്ക്", "ഞങ്ങൾ", "ഞങ്ങൾക്ക്", "അവൻ", "അവന്", "അവൾ", "അവൾക്ക്", "അവർ", "അവർക്ക്",
+    "main", "mujhe", "mujhko", "hum", "humein", "aap", "tum", "usne", "unhone", "woh", "unhe",
+    "میں", "مجھے", "مجھکو", "ہم", "ہمیں", "ہمکو", "تو", "تم", "آپ", "اس نے", "انہوں نے", "وہ",
+    "hu", "mane", "ame", "amne", "tame", "temne", "tene",
+    "હું", "મને", "અમે", "અમને", "તમે", "તેમણે", "તેણે", "તેઓ",
+    "i", "me", "he", "she", "him", "her", "us", "they", "them", "my", "our", "his"
 }
 
 def _clean_actor_candidate(cand: str) -> str:
-    tokens = [re.sub(r'[^\w\u0C00-\u0C7F]', '', t) for t in cand.split()]
+    tokens = [re.sub(rf'[^{INDIC_SCRIPTS_CHAR_CLASS}]', '', t) for t in cand.split()]
     tokens = [t for t in tokens if t]
     valid = []
     for t in tokens:
         tl = t.lower()
-        # Strip trailing postpositions if attached
-        for suffix in ["gariki", "annaki", "bhaiki", "sethki", "ki", "ku", "nundi", "nunchi", "గారికి", "అన్నకి", "కి", "కు", "నుండి", "నుంచి"]:
+        if tl in EXCLUDED_ACTOR_WORDS or tl in ALL_INDIC_NUMERALS or len(tl) < 2:
+            continue
+            
+        # Strip trailing postpositions across 8 languages
+        for suffix in [
+            "gariki", "annaki", "bhaiki", "sethki", "ki", "ku", "nundi", "nunchi",
+            "kku", "ukku", "kitta", "idam", "irundhu", "avargalukku", "annavukku",
+            "ko", "se", "ne", "bhaiya", "sethji",
+            "ige", "ge", "kke", "inda", "alli", "avaru",
+            "inu", "lekku", "ninnu", "thante",
+            "keliye", "sahab", "janab",
+            "mate", "pase", "pasethi", "bhai", "ben",
+            "గారికి", "అన్నకి", "కి", "కు", "నుండి", "నుంచి",
+            "க்கு", "உக்கு", "கிட்ட", "இடம்", "இருந்து",
+            "को", "से", "ने", "जी", "भैया", "साहब",
+            "ಗೆ", "ಇಗೆ", "ಕ್ಕೆ", "ಇಂದ",
+            "ക്ക്", "ഇന്", "ലേക്ക്", "നിന്ന്",
+            "کو", "سے", "صاحب",
+            "ને", "થી", "પાસે", "ભાઈ", "બહેન"
+        ]:
             if tl.endswith(suffix) and len(tl) > len(suffix) + 2:
                 t = t[:-len(suffix)]
                 tl = t.lower()
                 break
-        if (tl in KNOWN_BUSINESS_KEYWORDS or (tl not in EXCLUDED_ACTOR_WORDS and tl not in TELUGU_NUMERALS)) \
-           and not re.match(r'^\d+(\.\d+)?(k|thousand|thouzad|thoujand|thouzand|lakh|lakha|crore|koti)?$', tl):
+                
+        if (tl in KNOWN_BUSINESS_KEYWORDS or (tl not in EXCLUDED_ACTOR_WORDS and tl not in ALL_INDIC_NUMERALS)) \
+           and len(tl) >= 2 \
+           and not re.match(r'^\d+(\.\d+)?(k|thousand|thouzad|hazaar|aayiram|saavira|laksha|latcham|lakha|crore|kodi|koti)?$', tl):
             valid.append(t)
             
     if not valid:
@@ -105,10 +175,9 @@ def _clean_actor_candidate(cand: str) -> str:
     name = " ".join(valid)
     return name.title() if not name.isupper() else name
 
-
 class FinancialEntityExtractor:
     """
-    Extracts structured financial slot entities from code-mixed sentences.
+    Extracts structured financial slot entities across all 8 Indian languages and English.
     Applies Date-First Masking to prevent dates from colliding with monetary amounts.
     """
     
@@ -121,42 +190,47 @@ class FinancialEntityExtractor:
             "amounts": [],
             "payment_methods": [],
             "products": [],
-            "statuses": [],
-            "invoices": []
+            "invoices": [],
+            "temporals": [],
+            "status_flags": []
         }
         
-        # 0. Date-First Extraction & Masking for Amount Extractor
-        temporal_spans = TemporalExtractor.extract_dates(text)
-        masked_chars = list(text)
-        for ts in temporal_spans:
-            s_idx = max(0, ts["start"])
-            e_idx = min(len(masked_chars), ts["end"])
-            for k in range(s_idx, e_idx):
-                masked_chars[k] = " "
-        text_masked_for_amounts = "".join(masked_chars)
-        text_masked_lower = text_masked_for_amounts.lower()
+        # 1. Date-First Extraction
+        dates_extracted = TemporalExtractor.extract_dates(text)
+        entities["temporals"] = dates_extracted
         
-        # 1. Extract Amounts (Digits, Symbols, or Spoken Numerals from masked text)
-        amount_patterns = [
-            r'(?:rs\.?|inr|₹)?\s*(\d{1,3}(?:,\d{2,3})*(?:\.\d+)?|\d+(?:\.\d+)?)\s*(k|thousand|thouzad|thoujand|thouzand|thousend|vela|veye|lakh|lacs|lac|lakha|laksha|లక్ష|crore|crores|krore|koti|కోటి)?\b',
+        # Mask date spans
+        text_masked_for_amounts = text
+        for d in dates_extracted:
+            raw_span = d.get("raw_span", "")
+            if raw_span and raw_span in text_masked_for_amounts:
+                text_masked_for_amounts = text_masked_for_amounts.replace(raw_span, " " * len(raw_span))
+                
+        found_amounts = []
+        
+        # Check standard digits & currency symbols
+        digit_patterns = [
+            r'(?:rs\.?|inr|₹|రూ\.?|ரூ\.?|रु\.?|ರೂ\.?|രൂ\.?|روپے|રૂ\.?)\s*(\d+(?:,\d+)*(?:\.\d+)?)\s*(k|thousand|thouzad|hazaar|hazar|aayiram|saavira|laksha|lakh|latcham|lac|crore|koti|kodi|karor)?\b',
+            r'\b(\d+(?:,\d+)*(?:\.\d+)?)\s*(k|thousand|thouzad|hazaar|hazar|aayiram|saavira|laksha|lakh|latcham|lac|crore|koti|kodi|karor|rupees|rupaye|rupayalu|panam|dabbulu|dharalu|rokkha|rokad|روپیہ)\b',
+            r'\b(\d+(?:,\d+)*(?:\.\d+)?)\b'
         ]
         
-        found_amounts = []
-        for pat in amount_patterns:
-            for match in re.finditer(pat, text_masked_lower):
-                raw_val = match.group(1).replace(',', '')
+        for pat in digit_patterns:
+            for match in re.finditer(pat, text_masked_for_amounts, re.IGNORECASE):
+                raw_num = match.group(1).replace(',', '')
+                scale_word = match.group(2).lower() if len(match.groups()) >= 2 and match.group(2) else ""
                 try:
-                    val = float(raw_val)
-                    if val > 0:
-                        matched_full = match.group(0).strip()
-                        if any(s in matched_full for s in ["k", "thousand", "thouzad", "thoujand", "thouzand", "thousend", "vela", "veye"]):
-                            val *= 1000
-                        elif any(s in matched_full for s in ["lakh", "lacs", "lac", "lakha", "laksha", "లక్ష"]):
-                            val *= 100000
-                        elif any(s in matched_full for s in ["crore", "crores", "krore", "koti", "కోటి"]):
-                            val *= 10000000
+                    val = float(raw_num)
+                    if scale_word in ['k', 'thousand', 'thouzad', 'hazaar', 'hazar', 'aayiram', 'saavira']:
+                        val *= 1000
+                    elif scale_word in ['lakh', 'latcham', 'lac', 'laksha', 'laakh']:
+                        val *= 100000
+                    elif scale_word in ['crore', 'koti', 'kodi', 'karor']:
+                        val *= 10000000
+                    
+                    if not any(a["value"] == val for a in found_amounts) and val > 0:
                         found_amounts.append({
-                            "value": int(val) if isinstance(val, float) and val.is_integer() else (int(val) if isinstance(val, int) else round(val, 2)),
+                            "value": val,
                             "currency": "INR",
                             "raw_span": match.group(0).strip(),
                             "start": match.start(),
@@ -166,8 +240,8 @@ class FinancialEntityExtractor:
                 except ValueError:
                     continue
                     
-        # Check spoken numbers (e.g. 'aidhu vandalu', 'rendu vela 500', 'padi velu', 'iravai velu')
-        _, spoken_amounts = TeluguSpokenNumberParser.replace_spoken_numbers_in_text(text_masked_for_amounts)
+        # Check spoken numbers across 8 languages
+        _, spoken_amounts = IndicSpokenNumberParser.replace_spoken_numbers_in_text(text_masked_for_amounts)
         for sa in spoken_amounts:
             val = sa["parsed_amount"]
             if not any(a["value"] == val for a in found_amounts):
@@ -185,7 +259,7 @@ class FinancialEntityExtractor:
         # 2. Extract Actors / Counterparties
         def add_actor(raw_name: str, raw_span: str, atype="PERSON", conf=0.95):
             clean = _clean_actor_candidate(raw_name)
-            if clean and clean.lower() not in EXCLUDED_ACTOR_WORDS and clean.lower() not in TELUGU_NUMERALS:
+            if clean and len(clean) >= 2 and clean.lower() not in EXCLUDED_ACTOR_WORDS and clean.lower() not in ALL_INDIC_NUMERALS:
                 is_biz = any(k in clean.lower() for k in KNOWN_BUSINESS_KEYWORDS) or atype == "BUSINESS"
                 if not any(a["name"].lower() == clean.lower() for a in entities["actors"]):
                     entities["actors"].append({
@@ -195,51 +269,56 @@ class FinancialEntityExtractor:
                         "confidence": conf
                     })
 
-        # Strategy 0: Direct Subject Inflow/Outflow (e.g. 'Pavan naku 500 ichadu', 'Pavan 500 ichadu', 'రమేష్ నాకు 500 ఇచ్చాడు', 'సాత్విక్ నాకు 2500 ఇచ్చాడు')
-        subj_inflow_pat = r'(?:^|\s+)([a-zA-Z\u0C00-\u0C7F]+(?:\s+[a-zA-Z\u0C00-\u0C7F]+)?)\s+(?:naaku|naku|maaku|maku|to me|to us|నాకు|మాకు)?\s*(?:rs\.?|inr|₹)?\s*(?:\d+(?:,\d+)*(?:\.\d+)?|[a-zA-Z\u0C00-\u0C7F\s]+?)\s*(?:ichadu|ichindi|icharu|ichesadu|kattadu|pampadu|pampesadu|chellinchadu|chellincharu|paid|transferred|sent|ఇచ్చాడు|ఇచ్చింది|కట్టాడు|చెల్లించాడు)(?:\s+|$|[.,!?])'
-        for m in re.finditer(subj_inflow_pat, text, re.IGNORECASE):
+        # Strategy 1: Ergative Subject markers (Hindi/Urdu/Gujarati/Kannada): "Amit ne kal 1500 diya", "राहुल ने 2000 जमा किया", "રમેશે 500 આપ્યા"
+        ergative_pat = rf'(?:^|\s+)([{INDIC_SCRIPTS_CHAR_CLASS}]+(?:\s+[{INDIC_SCRIPTS_CHAR_CLASS}]+)?)\s+(?:ne|నే|ने|ਨੇ|ને)(?:\s+|$|[.,!?])'
+        for m in re.finditer(ergative_pat, text, re.IGNORECASE):
             add_actor(m.group(1), m.group(0), conf=0.98)
 
-        # Strategy A: Multi-word Business Names (e.g. 'Sri Lakshmi Traders', 'Balaji Kirana', 'లక్ష్మి ట్రేడర్స్')
-        biz_pat = r'(?:^|\s+)([a-zA-Z\u0C00-\u0C7F]+(?:\s+[a-zA-Z\u0C00-\u0C7F]+){0,2}\s+(?:traders|enterprises|stores|kirana|electricals|hardware|agency|distributors|mills|wholesalers|medicals|shop|mart|jewellers|textiles|supermarket|automobiles|fertilizers|ట్రేడర్స్|స్టోర్స్|కిరాణా|ఎంటర్‌ప్రైజెస్))(?:\s+|$|[.,!?])'
+        # Strategy 2: Multi-word Business Names across languages
+        biz_pat = rf'(?:^|\s+)([{INDIC_SCRIPTS_CHAR_CLASS}]+(?:\s+[{INDIC_SCRIPTS_CHAR_CLASS}]+){{0,2}}\s+(?:traders|enterprises|stores|kirana|electricals|hardware|agency|distributors|mills|wholesalers|medicals|shop|mart|jewellers|textiles|supermarket|automobiles|fertilizers|ట్రేడర్స్|స్టోర్స్|కిరాణా|டிரேடர்ஸ்|ஸ்டோர்ஸ்|ट्रेडर्स|स्टोर्स|किराना|ಟ್ರೇಡರ್ಸ್|സ്റ്റോർസ്|ટ્રેડર્સ))(?:\s+|$|[.,!?])'
         for m in re.finditer(biz_pat, text, re.IGNORECASE):
             add_actor(m.group(1), m.group(0), atype="BUSINESS", conf=0.97)
 
-        # Strategy B: Postpositional cues (Telugu / Romanized markers)
-        postpos_pat = r'(?:^|\s+)([a-zA-Z\u0C00-\u0C7F]+(?:\s+[a-zA-Z\u0C00-\u0C7F]+){0,2})\s+(?:gariki|annaki|bhaiki|sethki|ki|ku|nundi|nunchi|daggarnundi|daggara\s+nundi|daggara|vadda\s+nundi|vadda|tho|గారికి|అన్నకి|కి|కు|నుండి|నుంచి|దగ్గర\s+నుండి|దగ్గర్నుండి|దగ్గర|వద్ద\s+నుండి|వద్ద|తో)(?:\s+|$|[.,!?])'
+        # Strategy 3: Postpositional cues across 8 languages
+        postpos_pat = rf'(?:^|\s+)([{INDIC_SCRIPTS_CHAR_CLASS}]+(?:\s+[{INDIC_SCRIPTS_CHAR_CLASS}]+){{0,2}})\s+(?:gariki|annaki|bhaiki|sethki|ki|ku|nundi|nunchi|daggara|kku|ukku|kitta|idam|irundhu|ko|se|ke\s+paas|ige|ge|kke|inda|inu|lekku|thante|mate|pase|pasethi|గారికి|కి|కు|నుండి|க்கு|உக்கு|கிட்ட|இருந்து|को|से|के\s+पास|ಗೆ|ಇಗೆ|ಕ್ಕೆ|ಇಂದ|ക്ക്|ഇന്|ലേക്ക്|کو|سے|ને|થી|પાસે)(?:\s+|$|[.,!?])'
         for m in re.finditer(postpos_pat, text, re.IGNORECASE):
             add_actor(m.group(1), m.group(0), conf=0.96)
 
-        # Strategy C: Prepositional cues & Action commands
-        prep_pat = r'(?:^|\s+)(?:to|from|for|by|pay|give|paid to|transferred to|received from|due to|due from|payable to|receivable from|account of|record|add customer|add supplier)\s+([a-zA-Z\u0C00-\u0C7F]+(?:\s+[a-zA-Z\u0C00-\u0C7F]+){0,2})(?:\s+|$|[.,!?])'
+        # Strategy 4: Direct Subject Inflow/Outflow across 8 languages
+        subj_inflow_pat = rf'(?:^|\s+)([{INDIC_SCRIPTS_CHAR_CLASS}]+(?:\s+[{INDIC_SCRIPTS_CHAR_CLASS}]+)?)\s+(?:naaku|naku|maaku|maku|enakku|mujhe|humko|nanage|enikku|mane|to me|to us|నాకు|எனக்கு|मुझे|ہمکو)?\s*(?:rs\.?|inr|₹)?\s*(?:\d+(?:,\d+)*(?:\.\d+)?)\s*(?:ichadu|ichindi|icharu|ichesadu|kattadu|pampadu|koduthaar|thandhaar|kattinaar|anuppinaar|diya|diye|bheja|jama kiya|kotte|kottaru|koduthu|thannu|wasool hua|aapya|malya|paid|transferred|sent|ఇచ్చాడు|కొடுத்தார்|தந்தார்|दिया|भेजा|ಕೊಟ್ಟರು|തന്നു|આપ્યા)(?:\s+|$|[.,!?])'
+        for m in re.finditer(subj_inflow_pat, text, re.IGNORECASE):
+            add_actor(m.group(1), m.group(0), conf=0.98)
+
+        # Strategy 5: Prepositional cues & Action commands
+        prep_pat = rf'(?:^|\s+)(?:to|from|for|by|pay|give|paid to|transferred to|received from|due to|due from|payable to|receivable from|account of|record|add customer|add supplier)\s+([{INDIC_SCRIPTS_CHAR_CLASS}]+(?:\s+[{INDIC_SCRIPTS_CHAR_CLASS}]+){{0,2}})(?:\s+|$|[.,!?])'
         for m in re.finditer(prep_pat, text, re.IGNORECASE):
             add_actor(m.group(1), m.group(0), conf=0.95)
 
-        # Strategy D: Honorifics (e.g. 'Pavan Anna', 'Ramesh Garu', 'Sharma Seth')
-        honorific_pat = r'(?:^|\s+)([a-zA-Z\u0C00-\u0C7F]+(?:\s+[a-zA-Z\u0C00-\u0C7F]+){0,1})\s+(?:garu|anna|gaaru|bhai|ji|seth|reddy|rao|saab|babu|annaya|ayya|amma|గారు|అన్న|సేథ్|రావు|రెడ్డి)(?:\s+|$|[.,!?])'
+        # Strategy 6: Honorifics across all 8 languages
+        honorific_pat = rf'(?:^|\s+)([{INDIC_SCRIPTS_CHAR_CLASS}]+(?:\s+[{INDIC_SCRIPTS_CHAR_CLASS}]+){{0,1}})\s+(?:garu|anna|gaaru|bhai|bhaiya|ji|seth|sethji|reddy|rao|saab|sir|avargal|aiyya|thambi|avaru|sahukara|sethru|chetan|chettan|ikka|sahib|janab|ben|kaka|గారు|அவர்கள்|ஐயா|जी|भैया|साहब|ಅವರು|ಅಣ್ಣ|ചേട്ടൻ|صاحب|ભાઈ|બહેન)(?:\s+|$|[.,!?])'
         for m in re.finditer(honorific_pat, text, re.IGNORECASE):
-            add_actor(m.group(0), m.group(0), conf=0.95)
+            add_actor(m.group(1), m.group(0), conf=0.95)
 
-        # Strategy E: Action Verbs following/preceding Name
-        verb_pat_pre = r'(?:^|\s+)([a-zA-Z\u0C00-\u0C7F]+)\s+(?:ichadu|ichindi|icharu|pampadu|pampindi|kattadu|chesadu|annadu|ఇచ్చాడు|ఇచ్చింది|పంపాడు|కట్టాడు)(?:\s+|$|[.,!?])'
+        # Strategy 7: Action Verbs following/preceding Name
+        verb_pat_pre = rf'(?:^|\s+)([{INDIC_SCRIPTS_CHAR_CLASS}]+)\s+(?:ichadu|ichindi|pampadu|kattadu|koduthaar|thandhaaru|kattinaar|diya|diye|bheja|kotte|kottaru|koduthu|thannu|aapya|malya|annadu|sonnaaru|bola|paranju|bolya|ఇచ్చాడు|కొடுத்தார்|தந்தார்|दिया|भेजा|ಕೊಟ್ಟರು|തന്നു|આપ્યા)(?:\s+|$|[.,!?])'
         for m in re.finditer(verb_pat_pre, text, re.IGNORECASE):
             add_actor(m.group(1), m.group(0), conf=0.94)
 
-        verb_pat_post = r'\b(?:transfer chesadu|ichesadu|ichadu|pampadu|ivvalasindi|ivvalsindi|ivvali|ravali|kattalsindi|kattadu)\s+(?:to|for)?\s*([a-zA-Z\u0C00-\u0C7F]+)\b'
+        verb_pat_post = rf'\b(?:transfer chesadu|ichesadu|ichadu|pampadu|ivvalasindi|ivvalsindi|ivvali|ravali|kattalsindi|kattadu|tharanum|varanum|dena|lena|bheja|kodabeku|barabeku|kodukkanam|tharanund|ada karna|aapvana|levana)\s+(?:to|for)?\s*([{INDIC_SCRIPTS_CHAR_CLASS}]+)\b'
         for m in re.finditer(verb_pat_post, text, re.IGNORECASE):
             add_actor(m.group(1), m.group(0), conf=0.93)
 
-        # Strategy F: Fallback Positional Subject / Object / Noun
+        # Strategy 8: Fallback Positional Subject / Object / Noun
         if not entities["actors"]:
-            tokens = [re.sub(r'[^\w\u0C00-\u0C7F]', '', t) for t in text.split()]
+            tokens = [re.sub(rf'[^{INDIC_SCRIPTS_CHAR_CLASS}]', '', t) for t in text.split()]
             tokens = [t for t in tokens if t]
-            candidates = [t for t in tokens if t.lower() not in EXCLUDED_ACTOR_WORDS and t.lower() not in TELUGU_NUMERALS and not re.match(r'^\d+(\.\d+)?(k|lakh)?$', t.lower())]
+            candidates = [t for t in tokens if t.lower() not in EXCLUDED_ACTOR_WORDS and t.lower() not in ALL_INDIC_NUMERALS and not re.match(r'^\d+(\.\d+)?(k|lakh)?$', t.lower())]
             if candidates:
                 cand_name = candidates[0]
                 add_actor(cand_name, cand_name, conf=0.90)
 
         # 3. Extract Payment Method
-        for method_type, keywords in PAYMENT_METHODS.items():
+        for method_type, keywords in ALL_PAYMENT_METHODS.items():
             for kw in keywords:
                 if re.search(r'(?:^|\s+)' + re.escape(kw) + r'(?:\s+|$|[.,!?])', text_lower):
                     entities["payment_methods"].append({"method": method_type, "confidence": 0.95})

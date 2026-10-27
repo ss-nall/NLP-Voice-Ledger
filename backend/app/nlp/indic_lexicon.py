@@ -1,0 +1,211 @@
+"""
+Unified Multi-Lingual Indic Financial Lexicon Bridge.
+Aggregates Telugu, Tamil, Hindi, Kannada, Malayalam, Urdu, and Gujarati financial dictionaries,
+numerals, direction markers, temporal terms, honorifics, and payment methods.
+"""
+
+from typing import Dict, Any, List, Set
+from backend.app.nlp.telugu_lexicon import (
+    TELUGU_NUMERALS, DIRECTION_MARKERS as TELUGU_DIRECTION_MARKERS,
+    TEMPORAL_LEXICON as TELUGU_TEMPORAL_LEXICON, DAYS_OF_WEEK as TELUGU_DAYS_OF_WEEK,
+    TELUGU_MONTHS, TELUGU_HONORIFICS, BUSINESS_TERMS as TELUGU_BUSINESS_TERMS,
+    PAYMENT_METHODS as TELUGU_PAYMENT_METHODS
+)
+from backend.app.nlp.tamil_lexicon import (
+    TAMIL_NUMERALS, TAMIL_DIRECTION_MARKERS, TAMIL_TEMPORAL_LEXICON,
+    TAMIL_DAYS_OF_WEEK, TAMIL_MONTHS, TAMIL_HONORIFICS, TAMIL_BUSINESS_TERMS
+)
+from backend.app.nlp.hindi_lexicon import (
+    HINDI_NUMERALS, HINDI_DIRECTION_MARKERS, HINDI_TEMPORAL_LEXICON,
+    HINDI_DAYS_OF_WEEK, HINDI_MONTHS, HINDI_HONORIFICS, HINDI_BUSINESS_TERMS
+)
+from backend.app.nlp.kannada_lexicon import (
+    KANNADA_NUMERALS, KANNADA_DIRECTION_MARKERS, KANNADA_TEMPORAL_LEXICON,
+    KANNADA_DAYS_OF_WEEK, KANNADA_MONTHS, KANNADA_HONORIFICS, KANNADA_BUSINESS_TERMS
+)
+from backend.app.nlp.malayalam_lexicon import (
+    MALAYALAM_NUMERALS, MALAYALAM_DIRECTION_MARKERS, MALAYALAM_TEMPORAL_LEXICON,
+    MALAYALAM_DAYS_OF_WEEK, MALAYALAM_MONTHS, MALAYALAM_HONORIFICS, MALAYALAM_BUSINESS_TERMS
+)
+from backend.app.nlp.urdu_lexicon import (
+    URDU_NUMERALS, URDU_DIRECTION_MARKERS, URDU_TEMPORAL_LEXICON,
+    URDU_DAYS_OF_WEEK, URDU_MONTHS, URDU_HONORIFICS, URDU_BUSINESS_TERMS
+)
+from backend.app.nlp.gujarati_lexicon import (
+    GUJARATI_NUMERALS, GUJARATI_DIRECTION_MARKERS, GUJARATI_TEMPORAL_LEXICON,
+    GUJARATI_DAYS_OF_WEEK, GUJARATI_MONTHS, GUJARATI_HONORIFICS, GUJARATI_BUSINESS_TERMS
+)
+
+# Combined Spoken Numerals across 8 Languages
+ALL_INDIC_NUMERALS: Dict[str, float] = {
+    **TELUGU_NUMERALS,
+    **TAMIL_NUMERALS,
+    **HINDI_NUMERALS,
+    **KANNADA_NUMERALS,
+    **MALAYALAM_NUMERALS,
+    **URDU_NUMERALS,
+    **GUJARATI_NUMERALS
+}
+
+# Helper to merge markers
+def _get_list(marker_dict: Dict[str, Any], *keys: str) -> List[str]:
+    res = []
+    for k in keys:
+        res.extend(marker_dict.get(k, []))
+    return res
+
+# Combined Direction Markers
+ALL_DIRECTION_MARKERS: Dict[str, List[str]] = {
+    "PAYABLE_POSTPOSITIONS": list(set([
+        p for p in (
+            _get_list(TELUGU_DIRECTION_MARKERS, "PAYABLE_POSTPOSITIONS", "DATIVE_POSTPOSITIONS") +
+            _get_list(TAMIL_DIRECTION_MARKERS, "PAYABLE_POSTPOSITIONS", "DATIVE_POSTPOSITIONS") +
+            _get_list(HINDI_DIRECTION_MARKERS, "PAYABLE_POSTPOSITIONS", "DATIVE_POSTPOSITIONS") +
+            _get_list(KANNADA_DIRECTION_MARKERS, "PAYABLE_POSTPOSITIONS", "DATIVE_POSTPOSITIONS") +
+            _get_list(MALAYALAM_DIRECTION_MARKERS, "PAYABLE_POSTPOSITIONS", "DATIVE_POSTPOSITIONS") +
+            _get_list(URDU_DIRECTION_MARKERS, "PAYABLE_POSTPOSITIONS", "DATIVE_POSTPOSITIONS") +
+            _get_list(GUJARATI_DIRECTION_MARKERS, "PAYABLE_POSTPOSITIONS", "DATIVE_POSTPOSITIONS")
+        ) if p != "ne"  # Exclude romanized 'ne' from global dative to avoid conflict with Hindi/Urdu agentive 'ne'
+    ])),
+    "RECEIVABLE_POSTPOSITIONS": list(set(
+        _get_list(TELUGU_DIRECTION_MARKERS, "RECEIVABLE_POSTPOSITIONS", "ABLATIVE_POSTPOSITIONS") +
+        _get_list(TAMIL_DIRECTION_MARKERS, "RECEIVABLE_POSTPOSITIONS", "ABLATIVE_POSTPOSITIONS") +
+        _get_list(HINDI_DIRECTION_MARKERS, "RECEIVABLE_POSTPOSITIONS", "ABLATIVE_POSTPOSITIONS") +
+        _get_list(KANNADA_DIRECTION_MARKERS, "RECEIVABLE_POSTPOSITIONS", "ABLATIVE_POSTPOSITIONS") +
+        _get_list(MALAYALAM_DIRECTION_MARKERS, "RECEIVABLE_POSTPOSITIONS", "ABLATIVE_POSTPOSITIONS") +
+        _get_list(URDU_DIRECTION_MARKERS, "RECEIVABLE_POSTPOSITIONS", "ABLATIVE_POSTPOSITIONS") +
+        _get_list(GUJARATI_DIRECTION_MARKERS, "RECEIVABLE_POSTPOSITIONS", "ABLATIVE_POSTPOSITIONS")
+    )),
+    "AGENT_POSTPOSITIONS": list(set(
+        _get_list(HINDI_DIRECTION_MARKERS, "AGENT_POSTPOSITIONS") +
+        _get_list(URDU_DIRECTION_MARKERS, "AGENT_POSTPOSITIONS") +
+        _get_list(GUJARATI_DIRECTION_MARKERS, "AGENT_POSTPOSITIONS") +
+        ["ne", "usne", "unhone", "ने", "उसने", "उन्होंने", "ਨੇ", "e", "temne", "એ", "તેમણે"]
+    )),
+    "PAYABLE_VERBS": list(set(
+        _get_list(TELUGU_DIRECTION_MARKERS, "PAYABLE_VERBS") +
+        _get_list(TAMIL_DIRECTION_MARKERS, "PAYABLE_VERBS") +
+        _get_list(HINDI_DIRECTION_MARKERS, "PAYABLE_VERBS") +
+        _get_list(KANNADA_DIRECTION_MARKERS, "PAYABLE_VERBS") +
+        _get_list(MALAYALAM_DIRECTION_MARKERS, "PAYABLE_VERBS") +
+        _get_list(URDU_DIRECTION_MARKERS, "PAYABLE_VERBS") +
+        _get_list(GUJARATI_DIRECTION_MARKERS, "PAYABLE_VERBS")
+    )),
+    "RECEIVABLE_VERBS": list(set(
+        _get_list(TELUGU_DIRECTION_MARKERS, "RECEIVABLE_VERBS") +
+        _get_list(TAMIL_DIRECTION_MARKERS, "RECEIVABLE_VERBS") +
+        _get_list(HINDI_DIRECTION_MARKERS, "RECEIVABLE_VERBS") +
+        _get_list(KANNADA_DIRECTION_MARKERS, "RECEIVABLE_VERBS") +
+        _get_list(MALAYALAM_DIRECTION_MARKERS, "RECEIVABLE_VERBS") +
+        _get_list(URDU_DIRECTION_MARKERS, "RECEIVABLE_VERBS") +
+        _get_list(GUJARATI_DIRECTION_MARKERS, "RECEIVABLE_VERBS")
+    )),
+    "PAID_BY_CUSTOMER_VERBS": list(set(
+        _get_list(TELUGU_DIRECTION_MARKERS, "PAID_BY_CUSTOMER_VERBS") +
+        _get_list(TAMIL_DIRECTION_MARKERS, "PAID_BY_CUSTOMER_VERBS") +
+        _get_list(HINDI_DIRECTION_MARKERS, "PAID_BY_CUSTOMER_VERBS") +
+        _get_list(KANNADA_DIRECTION_MARKERS, "PAID_BY_CUSTOMER_VERBS") +
+        _get_list(MALAYALAM_DIRECTION_MARKERS, "PAID_BY_CUSTOMER_VERBS") +
+        _get_list(URDU_DIRECTION_MARKERS, "PAID_BY_CUSTOMER_VERBS") +
+        _get_list(GUJARATI_DIRECTION_MARKERS, "PAID_BY_CUSTOMER_VERBS")
+    )),
+    "PAID_BY_BUSINESS_VERBS": list(set(
+        _get_list(TELUGU_DIRECTION_MARKERS, "PAID_BY_BUSINESS_VERBS") +
+        _get_list(TAMIL_DIRECTION_MARKERS, "PAID_BY_BUSINESS_VERBS") +
+        _get_list(HINDI_DIRECTION_MARKERS, "PAID_BY_BUSINESS_VERBS") +
+        _get_list(KANNADA_DIRECTION_MARKERS, "PAID_BY_BUSINESS_VERBS") +
+        _get_list(MALAYALAM_DIRECTION_MARKERS, "PAID_BY_BUSINESS_VERBS") +
+        _get_list(URDU_DIRECTION_MARKERS, "PAID_BY_BUSINESS_VERBS") +
+        _get_list(GUJARATI_DIRECTION_MARKERS, "PAID_BY_BUSINESS_VERBS")
+    )),
+    "PROMISE_VERBS": list(set(
+        _get_list(TELUGU_DIRECTION_MARKERS, "PROMISE_VERBS") +
+        _get_list(TAMIL_DIRECTION_MARKERS, "PROMISE_VERBS") +
+        _get_list(HINDI_DIRECTION_MARKERS, "PROMISE_VERBS") +
+        _get_list(KANNADA_DIRECTION_MARKERS, "PROMISE_VERBS") +
+        _get_list(MALAYALAM_DIRECTION_MARKERS, "PROMISE_VERBS") +
+        _get_list(URDU_DIRECTION_MARKERS, "PROMISE_VERBS") +
+        _get_list(GUJARATI_DIRECTION_MARKERS, "PROMISE_VERBS")
+    )),
+    "SETTLEMENT_VERBS": list(set(
+        _get_list(TELUGU_DIRECTION_MARKERS, "SETTLEMENT_VERBS") +
+        _get_list(TAMIL_DIRECTION_MARKERS, "SETTLEMENT_VERBS") +
+        _get_list(HINDI_DIRECTION_MARKERS, "SETTLEMENT_VERBS") +
+        _get_list(KANNADA_DIRECTION_MARKERS, "SETTLEMENT_VERBS") +
+        _get_list(MALAYALAM_DIRECTION_MARKERS, "SETTLEMENT_VERBS") +
+        _get_list(URDU_DIRECTION_MARKERS, "SETTLEMENT_VERBS") +
+        _get_list(GUJARATI_DIRECTION_MARKERS, "SETTLEMENT_VERBS")
+    )),
+    "ADVANCE_VERBS": list(set(
+        _get_list(TELUGU_DIRECTION_MARKERS, "ADVANCE_VERBS") +
+        _get_list(TAMIL_DIRECTION_MARKERS, "ADVANCE_VERBS") +
+        _get_list(HINDI_DIRECTION_MARKERS, "ADVANCE_VERBS")
+    )),
+    "CREDIT_SALE_VERBS": list(set(
+        _get_list(TELUGU_DIRECTION_MARKERS, "CREDIT_SALE_VERBS") +
+        _get_list(TAMIL_DIRECTION_MARKERS, "CREDIT_SALE_VERBS") +
+        _get_list(HINDI_DIRECTION_MARKERS, "CREDIT_SALE_VERBS")
+    )),
+    "PURCHASE_VERBS": list(set(
+        _get_list(TELUGU_DIRECTION_MARKERS, "PURCHASE_VERBS") +
+        _get_list(TAMIL_DIRECTION_MARKERS, "PURCHASE_VERBS") +
+        _get_list(HINDI_DIRECTION_MARKERS, "PURCHASE_VERBS")
+    ))
+}
+
+# Combined Temporal Lexicons
+ALL_TEMPORAL_LEXICON: Dict[str, int] = {
+    **TELUGU_TEMPORAL_LEXICON,
+    **TAMIL_TEMPORAL_LEXICON,
+    **HINDI_TEMPORAL_LEXICON,
+    **KANNADA_TEMPORAL_LEXICON,
+    **MALAYALAM_TEMPORAL_LEXICON,
+    **URDU_TEMPORAL_LEXICON,
+    **GUJARATI_TEMPORAL_LEXICON
+}
+
+ALL_DAYS_OF_WEEK: Dict[str, int] = {
+    **TELUGU_DAYS_OF_WEEK,
+    **TAMIL_DAYS_OF_WEEK,
+    **HINDI_DAYS_OF_WEEK,
+    **KANNADA_DAYS_OF_WEEK,
+    **MALAYALAM_DAYS_OF_WEEK,
+    **URDU_DAYS_OF_WEEK,
+    **GUJARATI_DAYS_OF_WEEK
+}
+
+ALL_MONTHS: Dict[str, int] = {
+    **TELUGU_MONTHS,
+    **TAMIL_MONTHS,
+    **HINDI_MONTHS,
+    **KANNADA_MONTHS,
+    **MALAYALAM_MONTHS,
+    **URDU_MONTHS,
+    **GUJARATI_MONTHS
+}
+
+ALL_HONORIFICS: List[str] = list(set(
+    TELUGU_HONORIFICS + TAMIL_HONORIFICS + HINDI_HONORIFICS +
+    KANNADA_HONORIFICS + MALAYALAM_HONORIFICS + URDU_HONORIFICS + GUJARATI_HONORIFICS
+))
+
+ALL_BUSINESS_TERMS: Dict[str, str] = {
+    **TELUGU_BUSINESS_TERMS,
+    **TAMIL_BUSINESS_TERMS,
+    **HINDI_BUSINESS_TERMS,
+    **KANNADA_BUSINESS_TERMS,
+    **MALAYALAM_BUSINESS_TERMS,
+    **URDU_BUSINESS_TERMS,
+    **GUJARATI_BUSINESS_TERMS
+}
+
+# Multi-Lingual Payment Methods
+ALL_PAYMENT_METHODS: Dict[str, List[str]] = {
+    "cash": list(set(TELUGU_PAYMENT_METHODS["cash"] + [
+        "rokda", "rokaḍ", "panam", "kaasu", "nakad", "rokkha", "nagad", "নকদ",
+        "नकद", "रोकड़ा", "பணம்", "காசு", "ರೊಕ್ಕ", "പണം", "روپیہ", "રોકડ"
+    ])),
+    "upi": list(set(TELUGU_PAYMENT_METHODS["upi"] + ["gpay", "phonepe", "paytm", "upi transfer", "यूपीआई", "ஜிபே", "യുപിഐ", "ಯುಪಿಐ", "યુપીઆઈ"])),
+    "bank_transfer": list(set(TELUGU_PAYMENT_METHODS["bank_transfer"] + ["khata transfer", "bank me", "வங்கி", "खाता", "ബാങ്ക്", "ಬ್ಯಾಂಕ್", "બેંક"])),
+    "cheque": list(set(TELUGU_PAYMENT_METHODS["cheque"] + ["cheq", "чек", "செக்", "ಚೆಕ್", "ചെക്ക്", "ચેક"]))
+}

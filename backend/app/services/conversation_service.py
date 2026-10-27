@@ -1,7 +1,7 @@
 """
 Conversational Voice & Text Interaction Coordinator.
 Bridges user messages with the NLP pipeline, consistency engine,
-ledger state transitions, RAG retrieval, and speech feedback.
+ledger state transitions, RAG retrieval, multi-transaction clause execution, and speech feedback.
 """
 
 import json
@@ -14,11 +14,11 @@ from backend.app.database.models import (
 )
 from backend.app.nlp.pipeline import nlp_pipeline
 from backend.app.nlp.event_extraction import FinancialEvent
+from backend.app.nlp.clause_splitter import clause_splitter
 from backend.app.services.ledger_service import ledger_service
 from backend.app.services.analytics_service import analytics_service
 from backend.app.rag.document_service import document_service
 
-# Idempotency sliding-window cache to block rapid double-submissions
 _IDEMPOTENCY_CACHE: Dict[str, Tuple[float, Dict[str, Any]]] = {}
 
 class ConversationService:
@@ -54,11 +54,9 @@ class ConversationService:
         is_voice: bool = False,
         audio_metadata: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
-        # Check idempotency to prevent rapid double-registration (e.g. speech onend + Enter race)
         cache_key = f"{session_id}:{message_text.strip().lower()}"
         now_ts = time.time()
         
-        # Purge stale cache entries (> 30 seconds)
         stale_keys = [k for k, (t, _) in _IDEMPOTENCY_CACHE.items() if now_ts - t > 30.0]
         for k in stale_keys:
             _IDEMPOTENCY_CACHE.pop(k, None)
@@ -70,7 +68,12 @@ class ConversationService:
 
         known_entities = cls._fetch_known_entities(db)
         
-        # Determine active entity from recent transactions for balance lookups
+        # Check for multi-clause compound utterance ("One-Breath" Multi-Transaction Batch Ingestion)
+        clauses = clause_splitter.split_clauses(message_text)
+        if len(clauses) > 1:
+            return cls._process_batch_clauses(db, clauses, message_text, session_id, is_voice, known_entities)
+
+        # Determine active entity from recent transactions
         recent_txs = db.query(Transaction).order_by(Transaction.created_at.desc()).limit(10).all()
         recent_tx_dicts = [
             {
@@ -82,7 +85,6 @@ class ConversationService:
             for t in recent_txs
         ]
         
-        # Run NLP Pipeline
         nlp_result = nlp_pipeline.process_text(
             text=message_text,
             session_id=session_id,
@@ -91,11 +93,9 @@ class ConversationService:
             is_spoken=is_voice
         )
         
-        # Check if query vs transaction event
         if nlp_result.is_query and nlp_result.query_plan:
             return cls._handle_query(db, message_text, nlp_result, session_id, is_voice)
             
-        # If document query (e.g. policy or invoice query)
         if any(w in message_text.lower() for w in ["policy", "terms", "contract", "rules", "agreement", "invoice inv"]):
             rag_res = document_service.query_documents(db, message_text)
             return {
@@ -105,11 +105,9 @@ class ConversationService:
                 "nlp_diagnostics": nlp_result.to_dict()
             }
             
-        # Process Financial Event
         event: FinancialEvent = nlp_result.event
         actor = event.actor
         
-        # Check if phonetic entity disambiguation required
         ent_res = nlp_result.entity_resolution
         if ent_res.get("requires_disambiguation") and ent_res.get("suggested_matches"):
             return {
@@ -125,7 +123,6 @@ class ConversationService:
                 "speech_data": nlp_result.speech_data
             }
         
-        # Look up current balance for actor
         current_balance = 0.0
         cust = ledger_service.get_customer_by_name(db, actor)
         supp = ledger_service.get_supplier_by_name(db, actor)
@@ -134,7 +131,6 @@ class ConversationService:
         elif supp:
             current_balance = supp.outstanding_balance
             
-        # Re-evaluate consistency with accurate live balance
         consistency_info = nlp_result.consistency_info
         if current_balance > 0:
             from backend.app.nlp.consistency_engine import consistency_engine
@@ -144,7 +140,6 @@ class ConversationService:
                 recent_transactions=recent_tx_dicts
             )
             
-        # Check if contradiction / confirmation required
         if consistency_info.get("requires_confirmation"):
             return {
                 "success": False,
@@ -162,13 +157,9 @@ class ConversationService:
                 "speech_data": nlp_result.speech_data
             }
             
-        # Automatically apply event to ledger if consistent
         ledger_result = ledger_service.apply_financial_event(db, event)
-        
-        # Build natural language response explanation
         response_text = cls._build_success_response(event, ledger_result)
         
-        # Save message to conversation history
         conv_msg = ConversationMessage(
             session_id=session_id,
             sender="user",
@@ -191,6 +182,60 @@ class ConversationService:
         return final_result
 
     @classmethod
+    def _process_batch_clauses(
+        cls,
+        db: Session,
+        clauses: List[Dict[str, Any]],
+        raw_message: str,
+        session_id: str,
+        is_voice: bool,
+        known_entities: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """Executes compound clauses in a single atomic database transaction."""
+        executed_entries = []
+        response_lines = []
+        speech_summaries = []
+
+        for c in clauses:
+            clause_text = c["clause_text"]
+            nlp_res = nlp_pipeline.process_text(
+                text=clause_text,
+                session_id=session_id,
+                known_entities=known_entities,
+                is_spoken=is_voice
+            )
+            event: FinancialEvent = nlp_res.event
+            ledger_res = ledger_service.apply_financial_event(db, event)
+            executed_entries.append({
+                "clause": clause_text,
+                "event": event.model_dump(),
+                "ledger_update": ledger_res
+            })
+            resp_line = cls._build_success_response(event, ledger_res)
+            response_lines.append(resp_line)
+            speech_summaries.append(f"{event.direction} ₹{event.amount} {event.actor}")
+
+        conv_msg = ConversationMessage(
+            session_id=session_id,
+            sender="user",
+            message_text=raw_message,
+            is_voice=is_voice,
+            pipeline_dump_json=json.dumps({"batch_entries": [e["event"] for e in executed_entries]})
+        )
+        db.add(conv_msg)
+        db.commit()
+
+        combined_text = "⚡ **Batch Multi-Transaction Ingested Successfully:**\n\n" + "\n".join(response_lines)
+        return {
+            "message_type": "COMPOSITE_TRANSACTION_EXECUTED",
+            "success": True,
+            "text_response": combined_text,
+            "sub_entries": executed_entries,
+            "total_clauses_executed": len(executed_entries),
+            "speech_summary": ", ".join(speech_summaries)
+        }
+
+    @classmethod
     def confirm_and_apply_event(
         cls,
         db: Session,
@@ -201,7 +246,6 @@ class ConversationService:
         override_actor: Optional[str] = None,
         link_as_alias: bool = True
     ) -> Dict[str, Any]:
-        """User explicitly confirmed an ambiguous, disambiguated, or contradictory event."""
         event = FinancialEvent(**event_dict)
         original_actor = event.actor
 
@@ -247,13 +291,41 @@ class ConversationService:
         plan = nlp_result.query_plan
         intent = plan.get("intent")
         
-        if intent == "TOP_DEBTORS":
+        if intent == "HIGHEST_OUTFLOW":
+            time_range = plan.get("filters", {}).get("time_range", "THIS_MONTH")
+            res = analytics_service.get_highest_outflow(db, time_range=time_range)
+            if res["entity_name"]:
+                resp = f"📊 **Highest Payout ({time_range.replace('_', ' ').title()}):**\nYou paid the most to **{res['entity_name']}** (Total: **₹{res['total_amount']:,.2f}**)."
+            else:
+                resp = "No payout transactions recorded in this time range."
+            data = res
+        elif intent == "LAST_PAYMENT_DATE":
+            target = plan.get("target_entity") or "Ramesh"
+            res = analytics_service.get_last_payment_date(db, target)
+            if res["date"]:
+                resp = f"🗓️ **Last Payment for {res['entity_name']}:**\nRecorded on **{res['date']}** for an amount of **₹{res['amount']:,.2f}** ({res['type']})."
+            else:
+                resp = f"No past payment transactions found for '{target}'."
+            data = res
+        elif intent == "WEEKLY_RECEIVABLES":
+            res = analytics_service.get_weekly_receivables(db)
+            if res["items"]:
+                lines = [f"- **{it['name']}**: ₹{it['amount']:,.2f} ({it['due_date']})" for it in res["items"]]
+                resp = f"📅 **Weekly Receivables (Total: ₹{res['total_weekly_receivables']:,.2f}):**\n" + "\n".join(lines)
+            else:
+                resp = "No customer receivables or commitments due this week."
+            data = res
+        elif intent == "TODAY_CASHFLOW":
+            res = analytics_service.get_today_cashflow(db)
+            resp = f"💰 **Today's Total Cashflow ({res['date']}):**\n- **Collections (Inflow):** ₹{res['today_collections']:,.2f}\n- **Payouts (Outflow):** ₹{res['today_payouts']:,.2f}\n- **Net Cashflow:** ₹{res['net_flow']:,.2f}"
+            data = res
+        elif intent == "TOP_DEBTORS":
             debtors = analytics_service.get_top_debtors(db, limit=plan.get("limit", 5))
             if not debtors:
                 resp = "No customers currently have pending dues."
             else:
                 top = debtors[0]
-                lines = [f"{i+1}. {d['name']}: ₹{d['outstanding_balance']:,.2f} (Risk: {d['risk_tier']})" for i, d in enumerate(debtors)]
+                lines = [f"{i+1}. **{d['name']}**: ₹{d['outstanding_balance']:,.2f} (Risk: {d['risk_tier']})" for i, d in enumerate(debtors)]
                 resp = f"**{top['name']} owes you the most (₹{top['outstanding_balance']:,.2f})**.\n\nTop Debtors:\n" + "\n".join(lines)
             data = debtors
         elif intent == "TOTAL_RECEIVABLES":
@@ -269,11 +341,11 @@ class ConversationService:
             resp = f"**Cash Flow Summary**\n- Cash Inflow: ₹{summary['total_inflow']:,.2f}\n- Cash Outflow: ₹{summary['total_outflow']:,.2f}\n- Net Position: ₹{summary['net_cash_position']:,.2f}"
             data = summary
         elif intent == "PAYMENT_REMINDERS_DUE":
-            reminders = analytics_service.get_due_reminders(db)
+            reminders = analytics_service.get_reminders(db)
             if not reminders:
                 resp = "No upcoming payment reminders due."
             else:
-                lines = [f"- {r['customer_name']}: ₹{r['amount']:,.2f} (Due: {r['due_date']})" for r in reminders]
+                lines = [f"- {r['entity_name']}: ₹{r['amount']:,.2f} (Due: {r['due_date']})" for r in reminders]
                 resp = f"**Upcoming Payment Reminders ({len(reminders)}):**\n" + "\n".join(lines)
             data = reminders
         else:
@@ -293,24 +365,22 @@ class ConversationService:
         actor = ledger_result.get("entity_name", event.actor)
         amount = event.amount
         balance = ledger_result.get("current_balance", 0.0)
-        status = ledger_result.get("status", "SUCCESS")
         
         if event.direction == "receivable":
             if event.event_type in ["partial_payment", "full_payment", "payment_received", "full_settlement"]:
                 if balance == 0:
-                    return f"✅ **{actor}** నుండి **₹{amount:,.2f}** అందింది. బాకీ పూర్తిగా క్లియర్ అయింది! *(Received ₹{amount:,.2f} from {actor}. Account fully settled ₹0.00)*"
+                    return f"✅ **{actor}** నుండి **₹{amount:,.2f}** అందింది. బాకీ పూర్తిగా క్లియర్ అయింది! *(Received ₹{amount:,.2f} from {actor}. Fully settled)*"
                 else:
-                    return f"✅ **{actor}** నుండి **₹{amount:,.2f}** అందింది. మిగిలిన బాకీ: **₹{balance:,.2f}** *(Received ₹{amount:,.2f} from {actor}. Remaining balance: ₹{balance:,.2f})*"
+                    return f"✅ **{actor}** నుండి **₹{amount:,.2f}** అందింది. మిగిలిన బాకీ: **₹{balance:,.2f}** *(Received ₹{amount:,.2f} from {actor}. Balance: ₹{balance:,.2f})*"
             else:
-                return f"📝 **{actor}** ఖాతాలో **₹{amount:,.2f}** అప్పు/సేల్ నమోదయింది. మొత్తం బాకీ: **₹{balance:,.2f}** *(Recorded credit sale of ₹{amount:,.2f} for {actor}. Total balance: ₹{balance:,.2f})*"
+                return f"📝 **{actor}** ఖాతాలో **₹{amount:,.2f}** అప్పు/సేల్ నమోదయింది. మొత్తం బాకీ: **₹{balance:,.2f}** *(Credit sale ₹{amount:,.2f} for {actor})*"
         else:
             if event.event_type in ["payment_made", "partial_payment", "full_settlement"]:
                 if balance == 0:
-                    return f"✅ **{actor}** కి **₹{amount:,.2f}** చెల్లించాము. సప్లయర్ బాకీ పూర్తిగా తీరింది! *(Paid ₹{amount:,.2f} to {actor}. Supplier balance fully cleared ₹0.00)*"
+                    return f"✅ **{actor}** కి **₹{amount:,.2f}** చెల్లించాము. సప్లయర్ బాకీ పూర్తిగా తీరింది! *(Paid ₹{amount:,.2f} to {actor}. Fully cleared)*"
                 else:
-                    return f"✅ **{actor}** కి **₹{amount:,.2f}** చెల్లించాము. మిగిలిన బాకీ: **₹{balance:,.2f}** *(Paid ₹{amount:,.2f} to {actor}. Remaining payable: ₹{balance:,.2f})*"
+                    return f"✅ **{actor}** కి **₹{amount:,.2f}** చెల్లించాము. మిగిలిన బాకీ: **₹{balance:,.2f}** *(Paid ₹{amount:,.2f} to {actor}. Balance: ₹{balance:,.2f})*"
             else:
-                return f"📦 **{actor}** వద్ద కొనుగోలు **₹{amount:,.2f}** నమోదయింది. సప్లయర్ కి ఇవ్వాల్సిన బాకీ: **₹{balance:,.2f}** *(Recorded purchase of ₹{amount:,.2f} from {actor}. Total payable: ₹{balance:,.2f})*"
+                return f"📦 **{actor}** వద్ద కొనుగోలు **₹{amount:,.2f}** నమోదయింది. సప్లయర్ కి ఇవ్వాల్సిన బాకీ: **₹{balance:,.2f}** *(Purchase ₹{amount:,.2f} from {actor})*"
 
-# Global singleton
 conversation_service = ConversationService()

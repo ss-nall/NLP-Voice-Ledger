@@ -1,5 +1,6 @@
 import React from 'react';
-import { HelpCircle, UserPlus, CheckCircle2, X, ArrowRight, UserCheck } from 'lucide-react';
+import { HelpCircle, UserPlus, CheckCircle2, X, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export interface DisambiguationCardProps {
   data: {
@@ -33,7 +34,8 @@ export const DisambiguationCard: React.FC<DisambiguationCardProps> = ({
   onCancel,
   isProcessing = false
 }) => {
-  const spokenName = data.extracted_actor || data.proposed_event?.actor || 'పేరు';
+  const { t } = useLanguage();
+  const spokenName = data.extracted_actor || data.proposed_event?.actor || 'Name';
   const amount = Number(data.proposed_event?.amount || 0);
 
   if (data.resolved) {
@@ -56,8 +58,8 @@ export const DisambiguationCard: React.FC<DisambiguationCardProps> = ({
         {data.cancelled ? <X size={16} /> : <CheckCircle2 size={16} />}
         <span>
           {data.cancelled
-            ? 'ఈ ఖాతా ఎంపిక రద్దు చేయబడింది (Selection Cancelled)'
-            : (data.resolvedText || 'ఖాతా ఎంపిక పూర్తయింది (Account Linked & Resolved)')}
+            ? (t('btn.cancel', 'Cancelled') + ': Account Selection Cancelled')
+            : (data.resolvedText || 'Account Linked & Resolved')}
         </span>
       </div>
     );
@@ -84,7 +86,7 @@ export const DisambiguationCard: React.FC<DisambiguationCardProps> = ({
           <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(2, 132, 199, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <HelpCircle size={17} color="#0284C7" />
           </div>
-          <span>పోలిక ఉన్న ఖాతాను ఎంచుకోండి (Select Matching Account)</span>
+          <span>Select Matching Account</span>
         </div>
         <span
           style={{
@@ -102,8 +104,8 @@ export const DisambiguationCard: React.FC<DisambiguationCardProps> = ({
 
       {/* Spoken Context Subtitle */}
       <div style={{ fontSize: '0.84rem', color: 'var(--text-muted, #64748b)' }}>
-        మీరు చెప్పిన పేరు: <strong style={{ color: 'var(--text-main, #1e293b)', fontSize: '0.92rem' }}>"{spokenName}"</strong>
-        {amount > 0 && <span> • మొత్తం: <strong style={{ color: '#0284C7' }}>₹{amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>}
+        Spoken Name: <strong style={{ color: 'var(--text-main, #1e293b)', fontSize: '0.92rem' }}>"{spokenName}"</strong>
+        {amount > 0 && <span> • Amount: <strong style={{ color: '#0284C7' }}>₹{amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>}
       </div>
 
       {/* Candidate List */}
@@ -143,7 +145,7 @@ export const DisambiguationCard: React.FC<DisambiguationCardProps> = ({
                   {match.name}
                 </div>
                 <div style={{ fontSize: '0.74rem', color: 'var(--text-muted, #64748b)' }}>
-                  ప్రస్తుత బాకీ (Balance): <strong style={{ color: '#059669' }}>₹{Number(match.outstanding_balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong>
+                  {t('term.balance', 'Current Balance')}: <strong style={{ color: '#059669' }}>₹{Number(match.outstanding_balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong>
                 </div>
               </div>
             </div>
@@ -159,7 +161,7 @@ export const DisambiguationCard: React.FC<DisambiguationCardProps> = ({
                   fontWeight: 700
                 }}
               >
-                {Math.round((match.similarity || 0.85) * 100)}% మ్యాచ్
+                {Math.round((match.similarity || 0.85) * 100)}% match
               </span>
               <ArrowRight size={16} color="var(--text-muted, #94a3b8)" />
             </div>
@@ -194,7 +196,7 @@ export const DisambiguationCard: React.FC<DisambiguationCardProps> = ({
         }}
       >
         <UserPlus size={16} color="#0284C7" />
-        కాదు, కొత్త ఖాతా <strong style={{ color: '#0284C7' }}>"{spokenName}"</strong> గా సృష్టించు (Create New Profile)
+        Create new account for <strong style={{ color: '#0284C7', marginLeft: '4px' }}>"{spokenName}"</strong>
       </button>
 
       {/* Cancel Button */}
@@ -216,7 +218,7 @@ export const DisambiguationCard: React.FC<DisambiguationCardProps> = ({
           cursor: 'pointer'
         }}
       >
-        <X size={14} /> రద్దు చేయి (Cancel / Discard)
+        <X size={14} /> {t('btn.cancel', 'Cancel / Discard')}
       </button>
     </div>
   );

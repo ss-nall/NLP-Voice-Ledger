@@ -9,11 +9,11 @@ from typing import Dict, Any, List, Optional
 import time
 import re
 
-from backend.app.nlp.telugu_lexicon import TELUGU_NUMERALS
+from backend.app.nlp.indic_lexicon import ALL_INDIC_NUMERALS
 from backend.app.nlp.speech_processor import speech_processor
 from backend.app.nlp.language_detection import language_identifier
 from backend.app.nlp.code_switching import code_switch_detector
-from backend.app.nlp.transliteration import phonetic_normalizer, split_telugu_sandhi
+from backend.app.nlp.transliteration import phonetic_normalizer, split_indic_sandhi
 from backend.app.nlp.temporal_extraction import temporal_extractor
 from backend.app.nlp.entity_extraction import entity_extractor
 from backend.app.nlp.relation_extraction import relation_extractor
@@ -58,7 +58,7 @@ class PipelineContext:
 
 class BlackboardNLPPipeline:
     """
-    Enterprise modular blackboard orchestrator for bilingual Telugu-English bookkeeping.
+    Enterprise modular blackboard orchestrator for multi-lingual (Telugu, Tamil, Hindi, English) bookkeeping.
     """
 
     def process(
@@ -91,9 +91,9 @@ class BlackboardNLPPipeline:
 
         # 2. Sandhi Normalization & Spoken Number Processing
         t0 = time.perf_counter()
-        sandhi_split = split_telugu_sandhi(text)
-        tokens = re.findall(r'[a-zA-Z0-9\u0C00-\u0C7F]+', sandhi_split.lower())
-        has_spoken_numerals = any(t in TELUGU_NUMERALS or bool(re.match(r'^\d+(?:\.\d+)?k$', t)) for t in tokens)
+        sandhi_split = split_indic_sandhi(text)
+        tokens = re.findall(r'[a-zA-Z0-9\u0C00-\u0C7F\u0B80-\u0BFF\u0900-\u097F]+', sandhi_split.lower())
+        has_spoken_numerals = any(t in ALL_INDIC_NUMERALS or bool(re.match(r'^\d+(?:\.\d+)?k$', t)) for t in tokens)
 
         if is_spoken or has_spoken_numerals:
             speech_res = speech_processor.process_spoken_transcript(sandhi_split)
@@ -141,14 +141,14 @@ class BlackboardNLPPipeline:
             )
             ctx.coreference_info = dst_res
 
-            if not entities_res.get("actors") and dst_res.get("resolved_actor"):
-                entities_res["actors"].append({
+            if (not entities_res.get("actors") or dst_res.get("actor_resolved_from_context")) and dst_res.get("resolved_actor") and dst_res["resolved_actor"] != "Unspecified":
+                entities_res["actors"] = [{
                     "name": dst_res["resolved_actor"],
                     "raw_span": dst_res["resolved_actor"],
                     "type": "PERSON",
                     "confidence": 0.88,
                     "resolved_via_context": True
-                })
+                }]
 
             if not entities_res.get("amounts") and dst_res.get("inferred_amount"):
                 entities_res["amounts"].append({

@@ -3,22 +3,17 @@ import {
   ArrowUpRight,
   Search,
   CheckCircle,
-  Truck,
-  CreditCard,
-  Calendar,
-  Layers,
-  FileText,
   ShieldCheck,
-  TrendingDown,
-  Receipt,
   Edit2,
   Trash2
 } from 'lucide-react';
 import { api } from '../api/client';
 import { EditTransactionModal } from '../components/EditTransactionModal';
 import { useLedgerUpdated } from '../utils/events';
+import { useLanguage } from '../context/LanguageContext';
 
 export const PaidView: React.FC = () => {
+  const { t } = useLanguage();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [methodFilter, setMethodFilter] = useState('');
@@ -52,6 +47,9 @@ export const PaidView: React.FC = () => {
           t.source_text.toLowerCase().includes('icheshanu') ||
           t.source_text.toLowerCase().includes('ichanu') ||
           t.source_text.toLowerCase().includes('paid') ||
+          t.source_text.toLowerCase().includes('koduthen') ||
+          t.source_text.toLowerCase().includes('diye') ||
+          t.source_text.toLowerCase().includes('chukaya') ||
           t.source_text.toLowerCase().includes('చెల్లించాను') ||
           t.source_text.toLowerCase().includes('కట్టేశాను') ||
           t.source_text.toLowerCase().includes('ఇచ్చేశాను')
@@ -66,7 +64,7 @@ export const PaidView: React.FC = () => {
   };
 
   const handleDeleteDirect = async (txId: string) => {
-    if (window.confirm("ఈ చెల్లింపు వోచర్‌ను తొలగించాలనుకుంటున్నారా? సప్లయర్ బాకీ నిల్వ ఆటోమేటిక్ గా సరిచేయబడుతుంది.")) {
+    if (window.confirm(t('paid.confirm_delete', 'Are you sure you want to delete this payment voucher? Supplier balance will be automatically adjusted.'))) {
       try {
         await api.deleteTransaction(txId);
         loadPaidTransactions();
@@ -100,10 +98,10 @@ export const PaidView: React.FC = () => {
             <span style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--udhaar-red-bg)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--udhaar-red)' }}>
               <ArrowUpRight size={20} />
             </span>
-            చెల్లించినవి & ఖర్చులు (Paid Outflows & Expenses)
+            {t('paid.title', 'Paid Outflows & Expenses')}
           </h2>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            సప్లయర్లకు చెల్లించిన నగదు, వ్యాపార ఖర్చులు మరియు చెల్లింపు వోచర్లు.
+            {t('paid.desc', 'All payments made to suppliers, purchases, and operating business expenses.')}
           </p>
         </div>
       </div>
@@ -112,37 +110,37 @@ export const PaidView: React.FC = () => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
         <div className="fin-card fin-card-red">
           <div style={{ fontSize: '0.75rem', color: 'var(--udhaar-red-text)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
-            మొత్తం చెల్లించిన నగదు (Total Paid)
+            {t('paid.total_outflow', 'Total Outflows Paid')}
           </div>
           <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--udhaar-red)', marginTop: '4px' }}>
             ₹{totalPaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--udhaar-red-text)', marginTop: '4px' }}>
-            🚚 మొత్తం <strong>{transactions.length}</strong> చెల్లింపు వోచర్లు
+            🚚 <strong>{transactions.length}</strong> {t('paid.tx_count', 'vouchers recorded')}
           </div>
         </div>
 
         <div className="fin-card">
           <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
-            సప్లయర్ చెల్లింపులు (To Suppliers)
+            {t('paid.to_suppliers', 'To Suppliers')}
           </div>
           <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--text-main)', marginTop: '4px' }}>
             ₹{supplierPaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            డీలర్లు & హోల్‌సేలర్లకు క్లియర్ చేసిన మొత్తం
+            {t('paid.to_suppliers_sub', 'Amount cleared to dealers & wholesalers')}
           </div>
         </div>
 
         <div className="fin-card">
           <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
-            దుకాణం ఖర్చులు (Operating Expenses)
+            {t('paid.operating_expenses', 'Operating Expenses')}
           </div>
           <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--amber)', marginTop: '4px' }}>
             ₹{otherExpenses.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            అద్దె, రవాణా & రోజువారీ ఖర్చులు
+            {t('paid.operating_expenses_sub', 'Rent, transport & daily shop expenses')}
           </div>
         </div>
       </div>
@@ -155,7 +153,7 @@ export const PaidView: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="సప్లయర్ పేరు లేదా ఖర్చు వివరాలతో వెతకండి (Search paid)..."
+            placeholder={t('paid.search_placeholder', 'Search paid transaction or supplier...')}
             style={{
               width: '100%',
               background: 'var(--bg-card)',
@@ -175,21 +173,21 @@ export const PaidView: React.FC = () => {
             className={`btn ${methodFilter === '' ? 'btn-primary' : 'btn-secondary'}`}
             style={{ padding: '8px 14px', fontSize: '0.82rem' }}
           >
-            అన్ని పద్ధతులు (All)
+            {t('paid.tab_all', 'All Methods')}
           </button>
           <button
             onClick={() => setMethodFilter('cash')}
             className={`btn ${methodFilter === 'cash' ? 'btn-emerald' : 'btn-secondary'}`}
             style={{ padding: '8px 14px', fontSize: '0.82rem' }}
           >
-            నగదు (Cash)
+            {t('paid.tab_cash', 'Cash')}
           </button>
           <button
             onClick={() => setMethodFilter('bank')}
             className={`btn ${methodFilter === 'bank' ? 'btn-emerald' : 'btn-secondary'}`}
             style={{ padding: '8px 14px', fontSize: '0.82rem' }}
           >
-            బ్యాంక్ / UPI
+            {t('paid.tab_bank', 'Bank / UPI')}
           </button>
         </div>
       </div>
@@ -198,16 +196,16 @@ export const PaidView: React.FC = () => {
       <div className="fin-card" style={{ padding: '0', overflow: 'hidden' }}>
         {loading ? (
           <div style={{ padding: '36px 16px', textAlign: 'center', color: 'var(--text-muted)' }}>
-            చెల్లింపుల వివరాలు లోడ్ అవుతున్నాయి...
+            {t('paid.loading', 'Loading paid voucher entries...')}
           </div>
         ) : filtered.length === 0 ? (
           <div style={{ padding: '48px 16px', textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.92rem' }}>
             <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🧾</div>
             <div style={{ fontWeight: 700, color: 'var(--text-main)', marginBottom: '4px' }}>
-              ఇంకా ఏ చెల్లింపులు నమోదు కాలేదు (No Paid Outflows Yet)
+              {t('paid.no_records_title', 'No Paid Outflows Yet')}
             </div>
             <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              సప్లయర్ కి లేదా ఖర్చుల కోసం డబ్బులు చెల్లించినప్పుడు 'సప్లయర్ కి 5000 ఇచ్చేశాను' అని చెప్పండి!
+              {t('paid.no_records_sub', 'When paying a supplier or shop expense, record via voice or chat!')}
             </span>
           </div>
         ) : (
@@ -215,15 +213,15 @@ export const PaidView: React.FC = () => {
             <table className="fin-table">
               <thead>
                 <tr>
-                  <th style={{ minWidth: '100px' }}>వోచర్ #</th>
-                  <th style={{ minWidth: '110px' }}>తేదీ (Date)</th>
-                  <th style={{ minWidth: '160px' }}>సప్లయర్ / లబ్ధిదారు (Party)</th>
-                  <th style={{ minWidth: '130px' }}>రకం (Type)</th>
-                  <th style={{ minWidth: '130px', textAlign: 'right' }}>చెల్లించిన మొత్తం (Paid ₹)</th>
-                  <th style={{ minWidth: '120px', textAlign: 'right' }}>మిగిలిన బాకీ (Balance)</th>
-                  <th style={{ minWidth: '110px' }}>విధానం (Method)</th>
-                  <th style={{ minWidth: '100px' }}>ఆడిట్ (Status)</th>
-                  <th style={{ minWidth: '130px', textAlign: 'center' }}>చర్యలు (Actions)</th>
+                  <th style={{ minWidth: '100px' }}>{t('paid.th_voucher_no', 'Voucher #')}</th>
+                  <th style={{ minWidth: '110px' }}>{t('paid.th_date', 'Date')}</th>
+                  <th style={{ minWidth: '160px' }}>{t('paid.th_supplier', 'Party / Payee')}</th>
+                  <th style={{ minWidth: '130px' }}>{t('paid.th_type', 'Type')}</th>
+                  <th style={{ minWidth: '130px', textAlign: 'right' }}>{t('paid.th_amount', 'Paid Amount')}</th>
+                  <th style={{ minWidth: '120px', textAlign: 'right' }}>{t('paid.th_balance', 'Balance Remaining')}</th>
+                  <th style={{ minWidth: '110px' }}>{t('paid.th_method', 'Method')}</th>
+                  <th style={{ minWidth: '100px' }}>{t('paid.th_status', 'Status')}</th>
+                  <th style={{ minWidth: '130px', textAlign: 'center' }}>{t('paid.th_actions', 'Actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -248,7 +246,7 @@ export const PaidView: React.FC = () => {
                     <td>
                       <span className="badge badge-udhaar" style={{ fontSize: '0.72rem' }}>
                         <CheckCircle size={12} />
-                        {tx.transaction_type === 'EXPENSE' ? 'దుకాణం ఖర్చు' : 'సప్లయర్ చెల్లింపు'}
+                        {tx.transaction_type === 'EXPENSE' ? t('paid.type_expense', 'Shop Expense') : t('paid.type_supplier_payment', 'Supplier Payment')}
                       </span>
                     </td>
                     <td style={{ textAlign: 'right', fontWeight: 800, fontSize: '1.05rem', color: 'var(--udhaar-red)' }}>
@@ -265,7 +263,7 @@ export const PaidView: React.FC = () => {
                     <td>
                       <span className="badge badge-neutral" style={{ fontSize: '0.7rem', color: 'var(--jama-green)' }}>
                         <ShieldCheck size={11} color="var(--jama-green)" />
-                        క్లియర్డ్
+                        {t('paid.status_cleared', 'Cleared')}
                       </span>
                     </td>
                     <td style={{ textAlign: 'center' }}>
@@ -280,7 +278,7 @@ export const PaidView: React.FC = () => {
                           style={{ padding: '4px 8px', fontSize: '0.72rem', display: 'inline-flex', alignItems: 'center', gap: '3px' }}
                           title="Edit Paid Voucher"
                         >
-                          <Edit2 size={12} /> సవరించు
+                          <Edit2 size={12} /> {t('btn.edit', 'Edit')}
                         </button>
                         <button
                           type="button"
@@ -289,7 +287,7 @@ export const PaidView: React.FC = () => {
                           style={{ padding: '4px 8px', fontSize: '0.72rem', display: 'inline-flex', alignItems: 'center', gap: '3px' }}
                           title="Delete Paid Voucher"
                         >
-                          <Trash2 size={12} /> తొలగించు
+                          <Trash2 size={12} /> {t('btn.delete', 'Delete')}
                         </button>
                       </div>
                     </td>

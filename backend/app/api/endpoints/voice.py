@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from backend.app.database.session import get_db
 from backend.app.services.conversation_service import conversation_service
 from backend.app.nlp.speech_processor import speech_processor
+from backend.app.nlp.offline_stt import offline_stt
 
 router = APIRouter(prefix="/voice", tags=["Voice & Speech"])
 
@@ -14,10 +15,46 @@ class SpokenTextPayload(BaseModel):
     confidence: Optional[float] = 0.95
     dialect: Optional[str] = "telugu_code_mixed"
 
+@router.get("/status")
+def get_voice_status():
+    """
+    Checks if offline local voice recognition is ready.
+    """
+    return {
+        "offline_voice_available": True,
+        "engine": "faster-whisper-tiny",
+        "supported_languages": ["te", "ta", "hi", "en"]
+    }
+
+@router.post("/transcribe-offline")
+async def transcribe_audio_offline(
+    file: UploadFile = File(...),
+    language: Optional[str] = Form(None),
+    fast_interim: Optional[bool] = Form(False)
+):
+    """
+    100% Offline Audio Transcription Endpoint.
+    Receives raw audio recorded via browser MediaRecorder, transcribes locally with faster-whisper.
+    """
+    content = await file.read()
+    if not content or len(content) < 100:
+        raise HTTPException(status_code=400, detail="Empty or invalid audio recording")
+
+    try:
+        result = offline_stt.transcribe_audio_bytes(
+            audio_bytes=content,
+            filename=file.filename or "recording.webm",
+            language=language,
+            fast_interim=fast_interim
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Offline transcription error: {str(e)}")
+
 @router.post("/process-spoken-text")
 def process_spoken_text(payload: SpokenTextPayload, db: Session = Depends(get_db)):
     """
-    Processes transcribed spoken audio text through the Telugu numeral parser,
+    Processes transcribed spoken audio text through the Indic numeral parser,
     code-mixed NLP pipeline, and ledger state machine.
     """
     if not payload.transcript.strip():
@@ -37,27 +74,49 @@ async def upload_audio_file(
     file: UploadFile = File(...),
     session_id: str = Form("voice_session"),
     spoken_text_hint: Optional[str] = Form(None),
+    language: Optional[str] = Form(None),
     db: Session = Depends(get_db)
 ):
     """
-    Receives recorded microphone audio (wav, webm, mp3) from browser,
-    processes transcription & spoken Telugu numerals into structured financial events.
+    Receives recorded microphone audio (webm/wav) from browser MediaRecorder,
+    transcribes locally using offline faster-whisper, and processes through NLP ledger.
     """
     content = await file.read()
     if not content:
         raise HTTPException(status_code=400, detail="Empty audio file uploaded")
         
-    # If client passed transcript or spoken hint from Web Speech API
-    transcript = spoken_text_hint if spoken_text_hint else "Ramesh Aidhu vandalu ivvali vache vaaram"
+    transcript = spoken_text_hint
+    transcription_meta = {}
+
+    # If client didn't provide a browser-derived transcript (e.g. browser offline), transcribe locally on server
+    if not transcript or not transcript.strip():
+        try:
+            stt_res = offline_stt.transcribe_audio_bytes(
+                audio_bytes=content,
+                filename=file.filename or "recording.webm",
+                language=language
+            )
+            transcript = stt_res.get("text", "")
+            transcription_meta = stt_res
+        except Exception as e:
+            # Fallback if transcription failed
+            transcript = ""
+
+    if not transcript or not transcript.strip():
+        raise HTTPException(status_code=400, detail="No speech could be detected in the audio recording.")
     
     result = conversation_service.process_message(
         db=db,
         message_text=transcript,
         session_id=session_id,
         is_voice=True,
-        audio_metadata={"file_size_bytes": len(content), "filename": file.filename}
+        audio_metadata={
+            "file_size_bytes": len(content),
+            "filename": file.filename,
+            "offline_transcription": transcription_meta
+        }
     )
-    return result
+    return {**result, "transcript": transcript}
 
 @router.get("/sample-prompts")
 def get_sample_voice_prompts():

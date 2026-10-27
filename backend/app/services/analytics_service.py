@@ -1,11 +1,11 @@
 """
 Financial Analytics & Predictive Intelligence Service.
 Computes deterministic KPIs, aging buckets, cash flow projections,
-customer risk scoring, and ledger insights.
+customer risk scoring, and ledger insights across all 8 languages.
 """
 
 from datetime import datetime, timedelta
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from backend.app.database.models import (
@@ -19,13 +19,9 @@ class AnalyticsService:
     
     @staticmethod
     def get_overview(db: Session) -> Dict[str, Any]:
-        # 1. Total Receivables from Customers
         total_receivables = db.query(func.sum(Customer.outstanding_balance)).scalar() or 0.0
-        
-        # 2. Total Payables to Suppliers
         total_payables = db.query(func.sum(Supplier.outstanding_balance)).scalar() or 0.0
         
-        # 3. Cash Inflow & Outflow from completed transactions
         now = datetime.now()
         first_of_month = now.replace(day=1).strftime("%Y-%m-%d")
         
@@ -41,14 +37,12 @@ class AnalyticsService:
             Transaction.date >= first_of_month
         ).scalar() or 0.0
         
-        # 4. Overdue Amount (Commitments past due date)
         today_str = now.strftime("%Y-%m-%d")
         overdue_amount = db.query(func.sum(PaymentCommitment.amount)).filter(
             PaymentCommitment.due_date < today_str,
             PaymentCommitment.status == "PENDING"
         ).scalar() or 0.0
         
-        # 5. Active entity counts
         customer_count = db.query(Customer).count()
         supplier_count = db.query(Supplier).count()
         pending_commitments_count = db.query(PaymentCommitment).filter(PaymentCommitment.status == "PENDING").count()
@@ -80,18 +74,136 @@ class AnalyticsService:
             {
                 "id": c.id,
                 "name": c.name,
-                "name_telugu": c.name_telugu,
+                "name_telugu": getattr(c, 'name_telugu', c.name),
                 "outstanding_balance": c.outstanding_balance,
                 "credit_score": c.credit_score,
                 "risk_tier": c.risk_tier,
-                "phone": c.phone
+                "phone": c.phone,
+                "last_payment_date": c.last_payment_date
             }
             for c in customers
         ]
 
     @staticmethod
+    def get_highest_outflow(db: Session, time_range: str = "THIS_MONTH") -> Dict[str, Any]:
+        """Calculates who the business paid the most to during the given period."""
+        now = datetime.now()
+        start_date = now.replace(day=1).strftime("%Y-%m-%d")
+        if time_range == "TODAY":
+            start_date = now.strftime("%Y-%m-%d")
+        elif time_range == "THIS_WEEK":
+            start_date = (now - timedelta(days=now.weekday())).strftime("%Y-%m-%d")
+        elif time_range == "LAST_MONTH":
+            first_this_month = now.replace(day=1)
+            last_month_end = first_this_month - timedelta(days=1)
+            start_date = last_month_end.replace(day=1).strftime("%Y-%m-%d")
+
+        query = db.query(
+            Transaction.counterparty_name,
+            func.sum(Transaction.amount).label("total_paid")
+        ).filter(
+            Transaction.direction == "payable",
+            Transaction.transaction_type.in_(["PAYMENT_MADE", "PURCHASE", "DEBIT"]),
+            Transaction.date >= start_date
+        ).group_by(Transaction.counterparty_name).order_by(func.sum(Transaction.amount).desc()).first()
+
+        if query:
+            return {"entity_name": query[0], "total_amount": float(query[1]), "time_range": time_range}
+        return {"entity_name": None, "total_amount": 0.0, "time_range": time_range}
+
+    @staticmethod
+    def get_last_payment_date(db: Session, entity_name: str) -> Dict[str, Any]:
+        """Finds the most recent payment transaction date and amount for a specific entity."""
+        from backend.app.nlp.indic_phonetics import indic_phonetic_matcher
+        txs = db.query(Transaction).filter(
+            Transaction.transaction_type.in_(["PAYMENT_RECEIVED", "PAYMENT_MADE", "SETTLEMENT"])
+        ).order_by(Transaction.date.desc(), Transaction.id.desc()).all()
+
+        for t in txs:
+            if indic_phonetic_matcher.match_score(entity_name, t.counterparty_name) > 0.75:
+                return {
+                    "entity_name": t.counterparty_name,
+                    "date": t.date,
+                    "amount": t.amount,
+                    "direction": t.direction,
+                    "type": t.transaction_type
+                }
+        return {"entity_name": entity_name, "date": None, "amount": 0.0}
+
+    @staticmethod
+    def get_weekly_receivables(db: Session) -> Dict[str, Any]:
+        """Retrieves total dues / commitments scheduled to be collected this week."""
+        now = datetime.now()
+        start_of_week = (now - timedelta(days=now.weekday())).strftime("%Y-%m-%d")
+        end_of_week = (now + timedelta(days=6 - now.weekday())).strftime("%Y-%m-%d")
+
+        commitments = db.query(PaymentCommitment).filter(
+            PaymentCommitment.entity_type == "customer",
+            PaymentCommitment.due_date >= start_of_week,
+            PaymentCommitment.due_date <= end_of_week,
+            PaymentCommitment.status == "PENDING"
+        ).all()
+
+        total_due = sum(c.amount for c in commitments)
+        items = [{"name": c.entity_name, "amount": c.amount, "due_date": c.due_date} for c in commitments]
+
+        # If no explicit commitments, fallback to active customer balances
+        if not items:
+            active_custs = db.query(Customer).filter(Customer.outstanding_balance > 0).limit(5).all()
+            total_due = sum(c.outstanding_balance for c in active_custs)
+            items = [{"name": c.name, "amount": c.outstanding_balance, "due_date": "This Week"} for c in active_custs]
+
+        return {"total_weekly_receivables": total_due, "items": items}
+
+    @staticmethod
+    def get_today_cashflow(db: Session) -> Dict[str, Any]:
+        """Returns today's total collections (inflow) and payouts (outflow)."""
+        today_str = datetime.now().strftime("%Y-%m-%d")
+
+        inflow = db.query(func.sum(Transaction.amount)).filter(
+            Transaction.direction == "receivable",
+            Transaction.transaction_type.in_(["PAYMENT_RECEIVED", "CREDIT_SALE"]),
+            Transaction.date == today_str
+        ).scalar() or 0.0
+
+        outflow = db.query(func.sum(Transaction.amount)).filter(
+            Transaction.direction == "payable",
+            Transaction.transaction_type.in_(["PAYMENT_MADE", "PURCHASE"]),
+            Transaction.date == today_str
+        ).scalar() or 0.0
+
+        return {
+            "date": today_str,
+            "today_collections": float(inflow),
+            "today_payouts": float(outflow),
+            "net_flow": float(inflow - outflow)
+        }
+
+    @staticmethod
+    def get_cash_flow_summary(db: Session) -> Dict[str, Any]:
+        now = datetime.now()
+        first_of_month = now.replace(day=1).strftime("%Y-%m-%d")
+        
+        inflow = db.query(func.sum(Transaction.amount)).filter(
+            Transaction.direction == "receivable",
+            Transaction.transaction_type == "PAYMENT_RECEIVED",
+            Transaction.date >= first_of_month
+        ).scalar() or 0.0
+        
+        outflow = db.query(func.sum(Transaction.amount)).filter(
+            Transaction.direction == "payable",
+            Transaction.transaction_type == "PAYMENT_MADE",
+            Transaction.date >= first_of_month
+        ).scalar() or 0.0
+
+        return {
+            "total_inflow": float(inflow),
+            "total_outflow": float(outflow),
+            "net_cash_position": float(inflow - outflow)
+        }
+
+    @staticmethod
     def get_aging_analysis(db: Session) -> Dict[str, Any]:
-        """Categorizes outstanding receivables into aging buckets (0-30d, 31-60d, 61-90d, 90+d)."""
         customers = db.query(Customer).filter(Customer.outstanding_balance > 0).all()
         now = datetime.now()
         
@@ -103,7 +215,7 @@ class AnalyticsService:
         }
         
         for c in customers:
-            days = 15  # default
+            days = 15
             if c.last_payment_date:
                 try:
                     lp_date = datetime.strptime(c.last_payment_date, "%Y-%m-%d")
@@ -133,11 +245,8 @@ class AnalyticsService:
 
     @staticmethod
     def get_cash_flow_forecast(db: Session, days_ahead: int = 30) -> List[Dict[str, Any]]:
-        """Projects daily cash inflows and outflows over the next 30 days based on commitments."""
         now = datetime.now()
         forecast = []
-        
-        # Pull pending commitments
         commitments = db.query(PaymentCommitment).filter(PaymentCommitment.status == "PENDING").all()
         
         for d in range(days_ahead):
@@ -158,27 +267,7 @@ class AnalyticsService:
         return forecast
 
     @staticmethod
-    def get_top_debtors(db: Session, limit: int = 5) -> List[Dict[str, Any]]:
-        customers = db.query(Customer).filter(Customer.outstanding_balance > 0).order_by(Customer.outstanding_balance.desc()).limit(limit).all()
-        return [
-            {
-                "id": c.id,
-                "name": c.name,
-                "outstanding_balance": c.outstanding_balance,
-                "credit_score": c.credit_score,
-                "risk_tier": c.risk_tier,
-                "phone": c.phone,
-                "last_payment_date": c.last_payment_date
-            }
-            for c in customers
-        ]
-
-    @staticmethod
     def get_reminders(db: Session) -> List[Dict[str, Any]]:
-        """
-        Retrieves all active payment commitments with days calculation,
-        urgency classification, and pre-composed Telugu WhatsApp reminder messages.
-        """
         import urllib.parse
         now = datetime.now()
         today_date = now.date()
@@ -219,7 +308,6 @@ class AnalyticsService:
                 badge_te = f"{days_diff} రోజుల్లో"
                 badge_en = f"In {days_diff} days"
                 
-            # Pre-composed WhatsApp message
             if c.entity_type == "customer":
                 wa_text = (
                     f"నమస్కారం {c.entity_name} గారు,\n"
@@ -256,6 +344,4 @@ class AnalyticsService:
             
         return results
 
-
-# Global singleton
 analytics_service = AnalyticsService()

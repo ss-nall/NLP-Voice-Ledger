@@ -1,5 +1,6 @@
 import React from 'react';
-import { UserCheck, UserPlus, HelpCircle, X, CheckCircle2, ArrowRight, Sparkles, XCircle } from 'lucide-react';
+import { HelpCircle, X, CheckCircle2, UserPlus, XCircle } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface DisambiguationModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export const DisambiguationModal: React.FC<DisambiguationModalProps> = ({
   onCreateNew,
   data
 }) => {
+  const { t } = useLanguage();
   if (!isOpen || !data) return null;
 
   const { extracted_actor, suggested_matches, proposed_event } = data;
@@ -55,10 +57,10 @@ export const DisambiguationModal: React.FC<DisambiguationModalProps> = ({
             </div>
             <div>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)', margin: 0 }}>
-                మారుపేరు సరిపోలిక (Similar Name Found)
+                {t('modal.disambig_title')}
               </h3>
               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
-                ఉచ్చారణ లేదా స్పెల్లింగ్ పోలిక ఉన్న ఖాతాలు కనుగొనబడ్డాయి
+                {t('modal.disambig_desc')}
               </p>
             </div>
           </div>
@@ -96,7 +98,7 @@ export const DisambiguationModal: React.FC<DisambiguationModalProps> = ({
           >
             <div>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700 }}>
-                మీరు పలికిన పేరు (Spoken Name)
+                {t('modal.disambig_spoken_name')}
               </span>
               <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-main)', marginTop: '2px' }}>
                 "{extracted_actor}"
@@ -104,7 +106,7 @@ export const DisambiguationModal: React.FC<DisambiguationModalProps> = ({
             </div>
             <div style={{ textAlign: 'right' }}>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700 }}>
-                మొత్తం (Amount)
+                {t('modal.disambig_amount')}
               </span>
               <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--receivable-color)', marginTop: '2px' }}>
                 ₹{amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -113,7 +115,7 @@ export const DisambiguationModal: React.FC<DisambiguationModalProps> = ({
           </div>
 
           <div style={{ fontSize: '0.84rem', color: 'var(--text-main)', fontWeight: 700, marginBottom: '10px' }}>
-            ఈ క్రింది ఇప్పటికే ఉన్న ఖాతాను ఎంచుకోండి (Select Matching Account):
+            {t('modal.disambig_select_prompt')}
           </div>
 
           {/* Suggested Existing Accounts */}
@@ -150,11 +152,11 @@ export const DisambiguationModal: React.FC<DisambiguationModalProps> = ({
                       {m.name}
                     </span>
                     <span className="badge badge-emerald" style={{ fontSize: '0.68rem', padding: '2px 6px' }}>
-                      {Math.round((m.similarity || 0.85) * 100)}% Match
+                      {Math.round((m.similarity || 0.85) * 100)}% {t('modal.disambig_match')}
                     </span>
                   </div>
                   <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '3px' }}>
-                    ప్రస్తుత నిల్వ: <strong style={{ color: 'var(--jama-green)' }}>₹{Number(m.outstanding_balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong>
+                    {t('modal.disambig_cur_bal')} <strong style={{ color: 'var(--jama-green)' }}>₹{Number(m.outstanding_balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong>
                   </div>
                 </div>
 
@@ -193,7 +195,7 @@ export const DisambiguationModal: React.FC<DisambiguationModalProps> = ({
                 gap: '8px'
               }}
             >
-              <UserPlus size={16} /> కాదు, కొత్త ఖాతా "{extracted_actor}" ని సృష్టించు (Create New Account)
+              <UserPlus size={16} /> {t('modal.disambig_create_new', { name: extracted_actor })}
             </button>
 
             <button
@@ -209,7 +211,7 @@ export const DisambiguationModal: React.FC<DisambiguationModalProps> = ({
                 gap: '6px'
               }}
             >
-              <XCircle size={15} /> రద్దు చేయి (Cancel)
+              <XCircle size={15} /> {t('modal.disambig_cancel')}
             </button>
           </div>
         </div>

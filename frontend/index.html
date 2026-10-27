@@ -5,10 +5,23 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bilingual Voice & Text FinTech Ledger | Telugu-English Intelligence</title>
-    <meta name="description" content="Production-quality bilingual financial event intelligence and double-entry bookkeeping platform for small businesses operating in Telugu-English code-mixed language." />
+    <meta name="description" content="Enterprise multi-lingual conversational bookkeeping intelligence and double-entry voice khata platform across 8 Indian languages." />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0284C7" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch((err) => {
+            console.warn('Service worker registration note:', err);
+          });
+        });
+      }
+    </script>
   </body>
 </html>

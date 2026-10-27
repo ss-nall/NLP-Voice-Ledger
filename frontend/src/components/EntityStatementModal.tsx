@@ -3,21 +3,17 @@ import {
   X,
   User,
   Truck,
-  Smartphone,
   MessageCircle,
   FileText,
   Printer,
   Edit2,
-  Trash2,
-  TrendingDown,
-  TrendingUp,
-  Clock,
-  CheckCircle2,
-  Scale
+  CheckCircle2
 } from 'lucide-react';
 import { api } from '../api/client';
 import { EditTransactionModal } from './EditTransactionModal';
 import { notifyLedgerUpdated } from '../utils/events';
+import { useLanguage } from '../context/LanguageContext';
+import { generateAndDownloadStatementPDF } from '../utils/pdfGenerator';
 
 interface EntityStatementModalProps {
   isOpen: boolean;
@@ -34,6 +30,7 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
   type,
   onTransactionUpdated
 }) => {
+  const { t, language } = useLanguage();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTxForEdit, setSelectedTxForEdit] = useState<any>(null);
@@ -57,7 +54,7 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
       ].filter(Boolean);
 
       const filtered = allTxs.filter((tx: any) => {
-        const cp = (tx.counterparty || '').toLowerCase();
+        const cp = (tx.counterparty || tx.counterparty_name || '').toLowerCase();
         return entityNames.some((n) => cp.includes(n) || n.includes(cp));
       });
 
@@ -74,11 +71,6 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
   const isCustomer = type === 'customer';
   const outstanding = Number(entity.outstanding_balance || 0);
 
-  // Calculate Running Totals
-  const totalDebit = transactions
-    .filter((t) => t.direction === 'IN' || t.direction === 'OUT')
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
-
   const handleEditClick = (tx: any) => {
     setSelectedTxForEdit(tx);
     setIsEditModalOpen(true);
@@ -94,17 +86,17 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
 
   const handleShareWhatsApp = () => {
     const phone = (entity.phone || '+919848012345').replace(/[^0-9]/g, '');
-    let statementText = isCustomer
-      ? `నమస్కారం ${entity.name_telugu || entity.name} గారు,\nమీ వ్యాపార ఖాతా వివరాలు:\n`
-      : `నమస్కారం ${entity.name_telugu || entity.name} గారు,\nసప్లయర్ ఖాతా వివరాలు:\n`;
+    const template = t('wa.statement_msg', '🙏 Hello {name}!\n\nHere is your account statement:\nCurrent Balance: ₹{balance}\n\nTransactions:\n{lines}\n\nThank you!');
+    
+    const lines = transactions.slice(0, 8).map((tx) => {
+      const isRecv = tx.direction === 'IN' || tx.direction === 'receivable';
+      return `• ${tx.date || tx.created_at?.slice(0, 10)}: ${isRecv ? '+' : '-'}₹${Number(tx.amount || 0).toLocaleString()} (${tx.description || tx.source_text || ''})`;
+    }).join('\n');
 
-    statementText += `బాకీ నిల్వ: ₹${outstanding.toLocaleString('en-IN', { minimumFractionDigits: 2 })}\n\nలావాదేవీలు:\n`;
-
-    transactions.slice(0, 8).forEach((tx) => {
-      statementText += `• ${tx.date || tx.created_at?.slice(0, 10)}: ${tx.direction === 'IN' ? 'వచ్చినవి (Received)' : 'ఇచ్చినవి (Due)'} ₹${tx.amount?.toLocaleString()} (${tx.description || tx.raw_query || ''})\n`;
-    });
-
-    statementText += `\nధన్యవాదాలు!`;
+    const statementText = template
+      .replace('{name}', entity.name || '')
+      .replace('{balance}', Number(outstanding || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }))
+      .replace('{lines}', lines);
 
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(statementText)}`;
     window.open(url, '_blank');
@@ -144,14 +136,14 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
               <div>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-main)', margin: 0 }}>
                   {entity.name}
-                  {entity.name_telugu && entity.name_telugu !== entity.name && (
+                  {language === 'te' && entity.name_telugu && entity.name_telugu !== entity.name && (
                     <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginLeft: '8px', fontWeight: 500 }}>
                       ({entity.name_telugu})
                     </span>
                   )}
                 </h3>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', marginTop: '2px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <span>{isCustomer ? 'కస్టమర్ ఖాతా బుక్ (Customer Ledger)' : 'సప్లయర్ ఖాతా బుక్ (Supplier Ledger)'}</span>
+                  <span>{isCustomer ? t('modal.statement_cust_title', 'Customer Account Ledger Statement') : t('modal.statement_supp_title', 'Supplier Account Ledger Statement')}</span>
                   <span>•</span>
                   <span>{entity.phone || '+91 98480 12345'}</span>
                 </div>
@@ -177,7 +169,7 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
           <div style={{ padding: '16px 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', background: 'var(--bg-card)', borderBottom: '1px solid var(--border-color)' }}>
             <div className="fin-card" style={{ padding: '12px 16px', background: 'var(--bg-card-subtle)' }}>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700 }}>
-                {isCustomer ? 'మొత్తం రావాల్సిన బాకీ' : 'మొత్తం ఇవ్వాల్సిన బాకీ'}
+                {isCustomer ? t('modal.statement_total_pending', 'Total Outstanding Balance') : t('modal.statement_total_payable', 'Total Payable Balance')}
               </span>
               <div style={{ fontSize: '1.4rem', fontWeight: 800, color: outstanding > 0 ? (isCustomer ? 'var(--jama-green)' : 'var(--udhaar-red)') : 'var(--text-main)', marginTop: '2px' }}>
                 ₹{outstanding.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -186,7 +178,7 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
 
             <div className="fin-card" style={{ padding: '12px 16px', background: 'var(--bg-card-subtle)' }}>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700 }}>
-                లావాదేవీల సంఖ్య (Total Records)
+                {t('modal.statement_total_records', 'Total Records')}
               </span>
               <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-main)', marginTop: '2px' }}>
                 {transactions.length}
@@ -199,7 +191,28 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
                 className="btn btn-emerald"
                 style={{ padding: '8px 14px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '6px' }}
               >
-                <MessageCircle size={16} /> WhatsApp స్టేట్‌మెంట్
+                <MessageCircle size={16} /> {t('modal.statement_wa_btn', 'WhatsApp Statement')}
+              </button>
+              <button
+                onClick={() => generateAndDownloadStatementPDF({
+                  entityName: entity.name,
+                  entityType: type,
+                  phone: entity.phone,
+                  outstandingBalance: outstanding,
+                  transactions: transactions.map(t => ({
+                    date: t.date || t.created_at?.slice(0, 10),
+                    description: t.description || t.source_text || 'Transaction',
+                    direction: t.direction,
+                    amount: t.amount,
+                    payment_method: t.payment_method
+                  })),
+                  language
+                })}
+                className="btn btn-primary"
+                style={{ padding: '8px 14px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+                title="Download PDF Statement"
+              >
+                <FileText size={16} /> Download PDF
               </button>
               <button
                 onClick={() => window.print()}
@@ -212,39 +225,63 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
             </div>
           </div>
 
+          {/* Dynamic UPI QR Box for Instant Settlement */}
+          {outstanding > 0 && isCustomer && (
+            <div style={{ margin: '14px 24px 0 24px', padding: '14px 18px', background: 'rgba(16, 185, 129, 0.08)', border: '1px dashed rgba(16, 185, 129, 0.4)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=${encodeURIComponent(`upi://pay?pa=merchant@upi&pn=Khata&am=${outstanding}&cu=INR`)}`}
+                  alt="UPI QR Code"
+                  style={{ width: '70px', height: '70px', borderRadius: '6px', background: '#fff', padding: '4px' }}
+                />
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    ⚡ Instant UPI Settlement (₹{outstanding.toLocaleString('en-IN', { minimumFractionDigits: 2 })})
+                  </div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    Customer can scan with PhonePe, Google Pay, or Paytm to pay directly into your account.
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '2px', fontFamily: 'monospace' }}>
+                    UPI ID: merchant@upi
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Transactions Ledger Body */}
           <div style={{ padding: '20px 24px', flex: 1, overflowY: 'auto' }}>
             <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <FileText size={16} color="var(--receivable-color)" />
-              వ్యక్తిగత ఖాతా చరిత్ర (Individual Ledger History)
+              {t('modal.statement_history_title', 'Individual Ledger History')}
             </h4>
 
             {loading ? (
               <div style={{ textAlign: 'center', padding: '30px', color: 'var(--text-dim)' }}>
-                లావాదేవీలు లోడ్ అవుతున్నాయి...
+                {t('modal.statement_loading', 'Loading transactions...')}
               </div>
             ) : transactions.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 16px', background: 'var(--bg-card-subtle)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-color)' }}>
                 <CheckCircle2 size={36} color="var(--receivable-color)" style={{ margin: '0 auto 8px' }} />
-                <p style={{ fontWeight: 600, color: 'var(--text-main)' }}>ఈ ఖాతాపై ఎలాంటి విడి లావాదేవీలు నమోదు కాలేదు</p>
-                <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>వాయిస్ లేదా చాట్ ద్వారా లావాదేవీని నమోదు చేసినప్పుడు అవి ఇక్కడ కనిపిస్తాయి.</span>
+                <p style={{ fontWeight: 600, color: 'var(--text-main)' }}>{t('modal.statement_empty', 'No individual transactions recorded on this account.')}</p>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>{t('modal.statement_empty_sub', 'Transactions recorded via voice or chat will appear here.')}</span>
               </div>
             ) : (
               <div style={{ overflowX: 'auto' }}>
                 <table className="khata-table">
                   <thead>
                     <tr>
-                      <th>తేదీ (Date)</th>
-                      <th>వివరణ (Description)</th>
-                      <th>రకం (Direction)</th>
-                      <th style={{ textAlign: 'right' }}>మొత్తం (Amount)</th>
-                      <th>పద్ధతి (Method)</th>
-                      <th style={{ textAlign: 'center' }}>చర్యలు (Actions)</th>
+                      <th>{t('modal.statement_th_date', 'Date')}</th>
+                      <th>{t('modal.statement_th_desc', 'Description')}</th>
+                      <th>{t('modal.statement_th_dir', 'Direction')}</th>
+                      <th style={{ textAlign: 'right' }}>{t('modal.statement_th_amount', 'Amount')}</th>
+                      <th>{t('modal.statement_th_method', 'Method')}</th>
+                      <th style={{ textAlign: 'center' }}>{t('modal.statement_th_actions', 'Actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {transactions.map((tx) => {
-                      const isIn = tx.direction === 'IN';
+                      const isIn = tx.direction === 'IN' || tx.direction === 'receivable';
                       return (
                         <tr key={tx.id}>
                           <td style={{ fontWeight: 600, fontSize: '0.82rem' }}>
@@ -252,20 +289,20 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
                           </td>
                           <td>
                             <div style={{ fontWeight: 600, color: 'var(--text-main)', fontSize: '0.85rem' }}>
-                              {tx.description || tx.raw_query || 'లావాదేవీ'}
+                              {tx.description || tx.source_text || tx.raw_query || 'Entry'}
                             </div>
                           </td>
                           <td>
                             <span className={`badge ${isIn ? 'badge-jama' : 'badge-udhaar'}`} style={{ fontSize: '0.72rem' }}>
-                              {isIn ? '↓ వచ్చింది (Received)' : '↑ ఇచ్చింది (Due / Paid)'}
+                              {isIn ? `↓ ${t('term.receivable', 'Receivable')}` : `↑ ${t('term.payable', 'Payable')}`}
                             </span>
                           </td>
                           <td style={{ textAlign: 'right', fontWeight: 800, fontSize: '0.92rem', color: isIn ? 'var(--jama-green)' : 'var(--udhaar-red)' }}>
                             ₹{Number(tx.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                           </td>
                           <td>
-                            <span className="badge badge-neutral" style={{ fontSize: '0.7rem' }}>
-                              {tx.payment_mode || 'నగదు'}
+                            <span className="badge badge-neutral" style={{ fontSize: '0.7rem', textTransform: 'capitalize' }}>
+                              {tx.payment_method || tx.payment_mode || 'Cash'}
                             </span>
                           </td>
                           <td style={{ textAlign: 'center' }}>
@@ -274,9 +311,9 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
                                 onClick={() => handleEditClick(tx)}
                                 className="btn-outline"
                                 style={{ padding: '4px 8px', fontSize: '0.72rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                                title="సవరించు (Edit)"
+                                title={t('btn.edit', 'Edit')}
                               >
-                                <Edit2 size={12} /> సవరించు
+                                <Edit2 size={12} /> {t('btn.edit', 'Edit')}
                               </button>
                             </div>
                           </td>
@@ -292,10 +329,10 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
           {/* Footer */}
           <div style={{ padding: '12px 24px', borderTop: '1px solid var(--border-color)', background: 'var(--bg-card-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-              డబుల్ ఎంట్రీ ఆడిట్ వెరిఫైడ్ • డెబిట్/క్రెడిట్ సమతుల్యత
+              {t('modal.statement_verified', 'Double-Entry Audit Verified • Debit/Credit Balanced')}
             </span>
             <button onClick={onClose} className="btn-outline" style={{ padding: '6px 16px', fontSize: '0.82rem' }}>
-              మూసివేయి (Close)
+              {t('btn.close', 'Close')}
             </button>
           </div>
         </div>
@@ -307,7 +344,8 @@ export const EntityStatementModal: React.FC<EntityStatementModalProps> = ({
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           transaction={selectedTxForEdit}
-          onSuccess={handleTxSavedOrDeleted}
+          onSaved={handleTxSavedOrDeleted}
+          onDeleted={handleTxSavedOrDeleted}
         />
       )}
     </>

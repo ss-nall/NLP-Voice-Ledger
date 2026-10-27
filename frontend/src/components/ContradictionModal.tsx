@@ -1,5 +1,6 @@
 import React from 'react';
-import { AlertTriangle, ShieldAlert, CheckCircle2, X, Scale, ArrowRight, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, X, XCircle } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ContradictionModalProps {
   isOpen: boolean;
@@ -14,9 +15,10 @@ export const ContradictionModal: React.FC<ContradictionModalProps> = ({
   onConfirm,
   data
 }) => {
+  const { t } = useLanguage();
   if (!isOpen || !data) return null;
 
-  const { proposed_event, current_balance, alerts, confirmation_prompt } = data;
+  const { proposed_event, current_balance, confirmation_prompt } = data;
   const actor = proposed_event?.actor || 'Customer';
   const spokenAmt = Number(proposed_event?.amount || 0);
   const curBal = Number(current_balance || 0);
@@ -54,10 +56,10 @@ export const ContradictionModal: React.FC<ContradictionModalProps> = ({
             </div>
             <div>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)', margin: 0 }}>
-                ఖాతా వ్యత్యాసం (Ledger Discrepancy)
+                {t('modal.contra_title')}
               </h3>
               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
-                రికార్డైన బాకీకి మరియు చెప్పిన మొత్తానికి తేడా గుర్తించబడింది
+                {t('modal.contra_desc')}
               </p>
             </div>
           </div>
@@ -94,7 +96,7 @@ export const ContradictionModal: React.FC<ContradictionModalProps> = ({
               fontWeight: 600
             }}
           >
-            {confirmation_prompt || `${actor} ఖాతాలో ₹${curBal.toLocaleString()} బాకీ ఉంది. మీరు ₹${spokenAmt.toLocaleString()} చెప్పారు.`}
+            {confirmation_prompt || `${actor}: ₹${curBal.toLocaleString('en-IN')} vs ₹${spokenAmt.toLocaleString('en-IN')}`}
           </div>
 
           {/* Side-by-Side Comparison */}
@@ -108,13 +110,13 @@ export const ContradictionModal: React.FC<ContradictionModalProps> = ({
               }}
             >
               <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700 }}>
-                పుస్తకంలో ఉన్న బాకీ (Current Khata)
+                {t('modal.contra_cur_bal')}
               </span>
               <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#D97706', marginTop: '4px' }}>
                 ₹{curBal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                {actor} పెండింగ్ నిల్వ
+                {actor} ({t('modal.contra_pending_sub')})
               </div>
             </div>
 
@@ -127,13 +129,13 @@ export const ContradictionModal: React.FC<ContradictionModalProps> = ({
               }}
             >
               <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700 }}>
-                మీరు చెప్పిన మొత్తం (Spoken)
+                {t('modal.contra_spoken_amt')}
               </span>
               <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0284C7', marginTop: '4px' }}>
                 ₹{spokenAmt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                వాయిస్ / టెక్స్ట్ ఎంట్రీ
+                {t('modal.contra_spoken_sub')}
               </div>
             </div>
           </div>
@@ -155,7 +157,7 @@ export const ContradictionModal: React.FC<ContradictionModalProps> = ({
               }}
             >
               <CheckCircle2 size={18} />
-              అవును, మొత్తం బాకీ ₹{curBal.toLocaleString()} క్లియర్ చేయి (Full Settle)
+              {t('modal.contra_full_settle', { amount: curBal.toLocaleString('en-IN') })}
             </button>
 
             <button
@@ -172,7 +174,7 @@ export const ContradictionModal: React.FC<ContradictionModalProps> = ({
                 gap: '8px'
               }}
             >
-              కాదు, చెప్పిన ₹{spokenAmt.toLocaleString()} మాత్రమే నమోదు చేయి (Record Spoken Only)
+              {t('modal.contra_spoken_only', { amount: spokenAmt.toLocaleString('en-IN') })}
             </button>
 
             <button
@@ -188,7 +190,7 @@ export const ContradictionModal: React.FC<ContradictionModalProps> = ({
                 gap: '6px'
               }}
             >
-              <XCircle size={16} /> రద్దు చేయి & లావాదేవీని ఆపు (Cancel & Discard)
+              <XCircle size={16} /> {t('modal.contra_cancel')}
             </button>
           </div>
         </div>

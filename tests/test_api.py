@@ -14,6 +14,13 @@ def test_health_check():
     assert response.status_code == 200
     assert response.json()["status"] == "healthy"
 
+def test_voice_status_api():
+    response = client.get("/api/voice/status")
+    assert response.status_code == 200
+    data = response.json()
+    assert data.get("offline_voice_available") is True
+    assert "faster-whisper" in data.get("engine", "")
+
 def test_voice_spoken_text_api():
     payload = {
         "transcript": "Ramesh Aidhu vandalu ivvali vache vaaram",

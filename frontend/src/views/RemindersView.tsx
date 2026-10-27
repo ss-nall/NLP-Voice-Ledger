@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, MessageCircle, AlertTriangle, Calendar, CheckCircle2, User, RefreshCw, Send } from 'lucide-react';
+import { Clock, MessageCircle, User, RefreshCw } from 'lucide-react';
 import { api } from '../api/client';
 import { useLedgerUpdated } from '../utils/events';
+import { useLanguage } from '../context/LanguageContext';
 
 export const RemindersView: React.FC = () => {
+  const { t, language } = useLanguage();
   const [reminders, setReminders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('ALL');
@@ -35,6 +37,23 @@ export const RemindersView: React.FC = () => {
     return true;
   });
 
+  const getUrgencyBadge = (rem: any) => {
+    if (language === 'te') return rem.badge_te || rem.badge_en;
+    if (language === 'ta') {
+      if (rem.urgency === 'OVERDUE') return 'கெடு முடிந்தது';
+      if (rem.urgency === 'TODAY') return 'இன்றே கெடு';
+      if (rem.urgency === 'TOMORROW') return 'நாளை கெடு';
+      return 'வரவிருக்கும் கெடு';
+    }
+    if (language === 'hi') {
+      if (rem.urgency === 'OVERDUE') return 'समय बीत चुका';
+      if (rem.urgency === 'TODAY') return 'आज देय';
+      if (rem.urgency === 'TOMORROW') return 'कल देय';
+      return 'आगामी देय';
+    }
+    return rem.badge_en;
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Header Banner */}
@@ -42,40 +61,40 @@ export const RemindersView: React.FC = () => {
         <div>
           <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Clock size={24} color="#D97706" />
-            చెల్లింపుల రిమైండర్లు (Due Date Reminders & WhatsApp)
+            {t('rem.title', 'Payment Reminders & 1-Click WhatsApp')}
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>
-            గడువు తేదీలతో ఉన్న బాకీల వివరాలు మరియు ఒక్క క్లిక్‌తో వాట్సాప్ రిమైండర్ సందేశాలు
+            {t('rem.desc', 'Automated payment due notices with 1-click WhatsApp links.')}
           </p>
         </div>
         <button onClick={loadReminders} className="btn-outline">
-          <RefreshCw size={16} /> రిఫ్రెష్ (Refresh)
+          <RefreshCw size={16} /> {t('rem.refresh_btn', 'Refresh')}
         </button>
       </div>
 
       {/* Filter Tabs */}
       <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
         {[
-          { id: 'ALL', label: `అన్నీ (All - ${reminders.length})` },
-          { id: 'OVERDUE', label: `గడువు దాటినవి (Overdue - ${reminders.filter(r => r.urgency === 'OVERDUE').length})`, color: 'var(--udhaar-red)' },
-          { id: 'TODAY', label: `ఈరోజు / రేపు (Today/Tomorrow - ${reminders.filter(r => r.urgency === 'TODAY' || r.urgency === 'TOMORROW').length})`, color: '#D97706' },
-          { id: 'UPCOMING', label: `రాబోయేవి (Upcoming - ${reminders.filter(r => r.urgency === 'UPCOMING').length})`, color: 'var(--jama-green)' },
-        ].map((t) => (
+          { id: 'ALL', label: `${t('rem.tab_all', 'All')} (${reminders.length})` },
+          { id: 'OVERDUE', label: `${t('rem.tab_overdue', 'Overdue')} (${reminders.filter(r => r.urgency === 'OVERDUE').length})`, color: 'var(--udhaar-red)' },
+          { id: 'TODAY', label: `${t('rem.tab_today', 'Today / Tomorrow')} (${reminders.filter(r => r.urgency === 'TODAY' || r.urgency === 'TOMORROW').length})`, color: '#D97706' },
+          { id: 'UPCOMING', label: `${t('rem.tab_upcoming', 'Upcoming')} (${reminders.filter(r => r.urgency === 'UPCOMING').length})`, color: 'var(--jama-green)' },
+        ].map((tab) => (
           <button
-            key={t.id}
-            onClick={() => setFilter(t.id)}
+            key={tab.id}
+            onClick={() => setFilter(tab.id)}
             style={{
               padding: '8px 16px',
               borderRadius: 'var(--radius-full)',
-              border: filter === t.id ? '2px solid var(--border-focus)' : '1px solid var(--border-color)',
-              background: filter === t.id ? 'var(--receivable-light)' : 'var(--bg-card)',
-              color: filter === t.id ? 'var(--jama-green-dark)' : 'var(--text-main)',
-              fontWeight: filter === t.id ? 700 : 500,
+              border: filter === tab.id ? '2px solid var(--border-focus)' : '1px solid var(--border-color)',
+              background: filter === tab.id ? 'var(--receivable-light)' : 'var(--bg-card)',
+              color: filter === tab.id ? 'var(--jama-green-dark)' : 'var(--text-main)',
+              fontWeight: filter === tab.id ? 700 : 500,
               fontSize: '0.88rem',
               cursor: 'pointer'
             }}
           >
-            {t.label}
+            {tab.label}
           </button>
         ))}
       </div>
@@ -83,14 +102,14 @@ export const RemindersView: React.FC = () => {
       {/* Reminders Cards List */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
-          రిమైండర్లు లోడ్ అవుతున్నాయి...
+          {t('rem.loading', 'Loading reminders...')}
         </div>
       ) : filteredReminders.length === 0 ? (
         <div style={{ background: 'var(--bg-card)', padding: '40px', borderRadius: 'var(--radius-lg)', textAlign: 'center', border: '1px dashed var(--border-strong)' }}>
-          <CheckCircle2 size={40} color="#059669" style={{ margin: '0 auto 12px' }} />
-          <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>ప్రస్తుతం ఎలాంటి పెండింగ్ రిమైండర్లు లేవు</h3>
+          <Clock size={40} color="#059669" style={{ margin: '0 auto 12px' }} />
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>{t('rem.no_reminders_title', 'No Pending Payment Reminders')}</h3>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '4px' }}>
-            "సెప్టెంబర్ 17 కి పవన్ కి 15,000 ఇవ్వాలి" వంటి వాయిస్ లేదా టెక్స్ట్ నమోదు చేసినప్పుడు రిమైండర్ ఆటోమేటిక్‌గా ఇక్కడ కనిపిస్తుంది.
+            {t('rem.no_reminders_sub', 'When voice or text entries contain a due date, reminders appear here automatically.')}
           </p>
         </div>
       ) : (
@@ -118,25 +137,25 @@ export const RemindersView: React.FC = () => {
                       {rem.entity_name}
                     </div>
                     <span style={{ fontSize: '0.75rem', color: isReceivable ? '#059669' : '#DC2626', fontWeight: 600 }}>
-                      {isReceivable ? '↓ కస్టమర్ నుండి రావాలి (Receivable)' : '↑ సప్లయర్ కి ఇవ్వాలి (Payable)'}
+                      {isReceivable ? t('rem.dir_receivable', '↓ Customer Receivable') : t('rem.dir_payable', '↑ Supplier Payable')}
                     </span>
                   </div>
                   <span className={`badge ${isOverdue ? 'badge-udhaar' : (isToday ? 'badge-gold' : 'badge-jama')}`}>
-                    {rem.badge_te}
+                    {getUrgencyBadge(rem)}
                   </span>
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', background: 'var(--bg-card-subtle)', padding: '12px 14px', borderRadius: 'var(--radius-md)' }}>
                   <div>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', display: 'block' }}>మొత్తం (Amount)</span>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', display: 'block' }}>{t('rem.lbl_amount', 'Amount')}</span>
                     <span style={{ fontSize: '1.45rem', fontWeight: 800, color: isReceivable ? 'var(--receivable-color)' : 'var(--payable-color)' }}>
                       ₹{rem.amount?.toLocaleString()}
                     </span>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', display: 'block' }}>గడువు తేదీ (Due Date)</span>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', display: 'block' }}>{t('rem.lbl_due_date', 'Due Date')}</span>
                     <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                      {rem.formatted_date_te || rem.due_date}
+                      {rem.due_date}
                     </span>
                   </div>
                 </div>
@@ -148,10 +167,7 @@ export const RemindersView: React.FC = () => {
                 )}
 
                 {/* WhatsApp Action Button */}
-                <div style={{ marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-                    {rem.badge_en}
-                  </span>
+                <div style={{ marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                   <a
                     href={rem.whatsapp_link}
                     target="_blank"
@@ -159,7 +175,7 @@ export const RemindersView: React.FC = () => {
                     className="btn-whatsapp"
                   >
                     <MessageCircle size={16} />
-                    WhatsApp రిమైండర్ పంపండి
+                    {t('rem.send_whatsapp_btn', 'Send WhatsApp Reminder')}
                   </a>
                 </div>
               </div>

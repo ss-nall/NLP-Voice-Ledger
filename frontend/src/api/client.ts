@@ -12,7 +12,11 @@ export interface SpokenTextResponse {
   severity?: string;
   text_response: string;
   ledger_update?: any;
+  sub_entries?: any[];
+  total_clauses_executed?: number;
+  query_data?: any;
   nlp_diagnostics?: any;
+  speech_summary?: string;
   speech_data?: {
     raw_spoken_transcript: string;
     normalized_transcript: string;
@@ -20,8 +24,14 @@ export interface SpokenTextResponse {
     audio_confidence: number;
     waveform_data: number[];
     tts_response: {
-      telugu: string;
-      english: string;
+      telugu?: string;
+      english?: string;
+      tamil?: string;
+      hindi?: string;
+      kannada?: string;
+      malayalam?: string;
+      urdu?: string;
+      gujarati?: string;
     };
   };
   rag_sources?: any[];
@@ -35,6 +45,28 @@ export const api = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ transcript, session_id: sessionId, confidence })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  getVoiceStatus: async () => {
+    const res = await fetch(`${API_BASE}/voice/status`);
+    return res.json();
+  },
+
+  transcribeOfflineAudio: async (audioBlob: Blob, language?: string, fastInterim = false): Promise<{ text: string; detected_language?: string; duration?: number; offline?: boolean }> => {
+    const formData = new FormData();
+    formData.append("file", audioBlob, "recording.webm");
+    if (language) {
+      formData.append("language", language);
+    }
+    if (fastInterim) {
+      formData.append("fast_interim", "true");
+    }
+    const res = await fetch(`${API_BASE}/voice/transcribe-offline`, {
+      method: "POST",
+      body: formData
     });
     if (!res.ok) throw new Error(await res.text());
     return res.json();

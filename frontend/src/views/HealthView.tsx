@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, AlertCircle, RefreshCw, Scale, CheckCircle2, FileCheck, Layers } from 'lucide-react';
+import { RefreshCw, Scale, CheckCircle2, AlertCircle, Layers } from 'lucide-react';
 import { api } from '../api/client';
 import { useLedgerUpdated } from '../utils/events';
+import { useLanguage } from '../context/LanguageContext';
 
 export const HealthView: React.FC = () => {
+  const { t } = useLanguage();
   const [health, setHealth] = useState<any>(null);
   const [journal, setJournal] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,16 +39,16 @@ export const HealthView: React.FC = () => {
       {/* Header */}
       <div style={{ background: 'var(--bg-card)', padding: '20px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h2 style={{ fontSize: '1.35rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <h2 style={{ fontSize: '1.35rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px', margin: 0, color: 'var(--text-main)' }}>
             <Scale size={24} color="#059669" />
-            ఖాతా ఆడిట్ & డబుల్ ఎంట్రీ సమతుల్యత (Double-Entry Trial Balance)
+            {t('health.title', 'Double-Entry Trial Balance & Health Audit')}
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>
-            డెబిట్ మరియు క్రెడిట్ లెక్కలు 100% సరిపోయాయో లేదో నిర్ధారించే ప్రత్యక్ష తనిఖీ వ్యవస్థ
+            {t('health.desc', 'Deterministic general ledger integrity check (Total Debits == Total Credits).')}
           </p>
         </div>
         <button onClick={loadHealthData} className="btn-outline">
-          <RefreshCw size={16} /> రీ-ఆడిట్ చేయి (Re-verify)
+          <RefreshCw size={16} /> {t('health.reverify_btn', 'Re-verify Audit')}
         </button>
       </div>
 
@@ -57,30 +59,30 @@ export const HealthView: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
               {health.is_healthy ? <CheckCircle2 size={24} color="#059669" /> : <AlertCircle size={24} color="#DC2626" />}
               <span style={{ fontWeight: 700, fontSize: '1.05rem', color: health.is_healthy ? 'var(--jama-green-dark)' : 'var(--payable-color)' }}>
-                {health.is_healthy ? 'ఖాతా సమతుల్యంగా ఉంది (100% Balanced)' : 'వ్యత్యాసం గుర్తించబడింది (Discrepancy)'}
+                {health.is_healthy ? t('health.balanced_status', 'Trial Balance Status: Perfectly Balanced') : t('health.discrepancy_status', 'Discrepancy Detected')}
               </span>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              Total Debits == Total Credits. సున్నా గణిత లోపాలు.
+              {t('health.balanced_sub', 'Total Debits == Total Credits. Zero mathematical errors.')}
             </p>
           </div>
 
           <div className="fin-card">
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 600 }}>మొత్తం డెబిట్లు (Total Debits)</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 600 }}>{t('health.total_debits', 'Total Debits (Dr)')}</span>
             <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#059669', marginTop: '4px' }}>
               ₹{health.total_debits?.toLocaleString()}
             </div>
           </div>
 
           <div className="fin-card">
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 600 }}>మొత్తం క్రెడిట్లు (Total Credits)</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 600 }}>{t('health.total_credits', 'Total Credits (Cr)')}</span>
             <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#059669', marginTop: '4px' }}>
               ₹{health.total_credits?.toLocaleString()}
             </div>
           </div>
 
           <div className="fin-card">
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 600 }}>వ్యత్యాసం (Discrepancy)</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 600 }}>{t('health.difference', 'Difference (Discrepancy)')}</span>
             <div style={{ fontSize: '1.6rem', fontWeight: 800, color: health.discrepancy === 0 ? '#059669' : '#DC2626', marginTop: '4px' }}>
               ₹{health.discrepancy?.toFixed(2)}
             </div>
@@ -90,26 +92,26 @@ export const HealthView: React.FC = () => {
 
       {/* General Ledger Journal Table */}
       <div className="fin-card">
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)' }}>
           <Layers size={18} color="#059669" />
-          జనరల్ లెడ్జర్ జర్నల్ ఎంట్రీలు (Double-Entry Journal Entries)
+          {t('health.journal_title', 'Double-Entry General Ledger Journal')}
         </h3>
         
         {loading ? (
-          <p style={{ color: 'var(--text-muted)', padding: '20px' }}>జర్నల్ ఎంట్రీలు లోడ్ అవుతున్నాయి...</p>
+          <p style={{ color: 'var(--text-muted)', padding: '20px' }}>{t('health.loading_journal', 'Loading journal entries...')}</p>
         ) : journal.length === 0 ? (
-          <p style={{ color: 'var(--text-muted)', padding: '20px' }}>ఇంకా ఎలాంటి లావాదేవీలు నమోదు కాలేదు.</p>
+          <p style={{ color: 'var(--text-muted)', padding: '20px' }}>{t('health.no_journal', 'No journal entries recorded yet.')}</p>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table className="khata-table">
               <thead>
                 <tr>
-                  <th>తేదీ (Date)</th>
-                  <th>వివరణ (Description)</th>
-                  <th>ఖాతా (Account)</th>
-                  <th>రకం (Type)</th>
-                  <th style={{ textAlign: 'right' }}>డెబిట్ (Debit ₹)</th>
-                  <th style={{ textAlign: 'right' }}>క్రెడిట్ (Credit ₹)</th>
+                  <th>{t('health.th_date', 'Date')}</th>
+                  <th>{t('health.th_desc', 'Description')}</th>
+                  <th>{t('health.th_account', 'Account')}</th>
+                  <th>{t('health.th_type', 'Type')}</th>
+                  <th style={{ textAlign: 'right' }}>{t('health.th_debit', 'Debit (Dr ₹)')}</th>
+                  <th style={{ textAlign: 'right' }}>{t('health.th_credit', 'Credit (Cr ₹)')}</th>
                 </tr>
               </thead>
               <tbody>

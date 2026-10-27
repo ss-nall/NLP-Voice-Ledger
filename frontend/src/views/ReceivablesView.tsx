@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, MessageSquare, Smartphone, Search, AlertCircle, CheckCircle2, Clock, Filter, Sparkles, ArrowDownLeft, Eye, FileText } from 'lucide-react';
+import { TrendingUp, Search, Sparkles, Eye } from 'lucide-react';
 import { api } from '../api/client';
 import { ReminderModal } from '../components/ReminderModal';
 import { EntityStatementModal } from '../components/EntityStatementModal';
 import { useLedgerUpdated } from '../utils/events';
+import { useLanguage } from '../context/LanguageContext';
 
 export const ReceivablesView: React.FC = () => {
+  const { t } = useLanguage();
   const [customers, setCustomers] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [tabFilter, setTabFilter] = useState<'active' | 'all' | 'settled'>('active');
@@ -104,10 +106,10 @@ export const ReceivablesView: React.FC = () => {
             <span style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--jama-green-bg)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--jama-green)' }}>
               <TrendingUp size={20} />
             </span>
-            రావాల్సిన బాకీలు (Accounts Receivable)
+            {t('rec.title', 'Customer Receivables (To Receive)')}
           </h2>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            కస్టమర్ల నుండి వ్యాపారానికి రావాల్సిన నికర బాకీల జాబితా (Pending Customer Dues & Credit Sales).
+            {t('rec.desc', 'List of pending customer credit balances & receivables.')}
           </p>
         </div>
       </div>
@@ -116,23 +118,23 @@ export const ReceivablesView: React.FC = () => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
         <div className="fin-card fin-card-green">
           <div style={{ fontSize: '0.75rem', color: 'var(--jama-green-text)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
-            మొత్తం రావాల్సిన బాకీలు (Total Pending Dues)
+            {t('rec.total_pending', 'Total Pending Receivables')}
           </div>
           <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--jama-green)', marginTop: '4px' }}>
             ₹{totalReceivables.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            {activeCustomers.length} బాకీ ఉన్న ఖాతాలు • {settledCustomers.length} పూర్తయిన ఖాతాలు
+            {activeCustomers.length} {t('rec.active_accounts', 'active accounts')} • {settledCustomers.length} {t('rec.settled_accounts', 'settled accounts')}
           </div>
         </div>
 
         <div className="fin-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', borderLeft: '4px solid var(--jama-green)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)' }}>
             <Sparkles size={16} color="var(--jama-green)" />
-            స్మార్ట్ వసూళ్ల నియమం (Automated Accounting Rule)
+            {t('rec.accounting_rule_title', 'Automated Accounting Rule')}
           </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '4px', lineHeight: 1.5 }}>
-            కస్టమర్ డబ్బులు ఇచ్చినప్పుడు అవి <strong>వచ్చినవి (Received)</strong> లో నమోదవుతాయి. ఇక్కడ ఆ కస్టమర్ బాకీ నిల్వ మాత్రమే ఆటోమేటిక్ గా తగ్గుతుంది.
+            {t('rec.accounting_rule_desc', 'When customer payments are received, they are recorded in Inflows and the customer balance automatically decreases.')}
           </div>
         </div>
       </div>
@@ -154,7 +156,7 @@ export const ReceivablesView: React.FC = () => {
               boxShadow: tabFilter === 'active' ? '0 2px 6px rgba(16, 185, 129, 0.3)' : 'none'
             }}
           >
-            బాకీ ఉన్నవి ({activeCustomers.length})
+            {t('rec.tab_active', 'Active Dues')} ({activeCustomers.length})
           </button>
           <button
             onClick={() => setTabFilter('all')}
@@ -169,7 +171,7 @@ export const ReceivablesView: React.FC = () => {
               border: tabFilter === 'all' ? '1px solid var(--border-color)' : 'none'
             }}
           >
-            అన్ని ఖాతాలు ({customers.length})
+            {t('rec.tab_all', 'All Accounts')} ({customers.length})
           </button>
           <button
             onClick={() => setTabFilter('settled')}
@@ -184,7 +186,7 @@ export const ReceivablesView: React.FC = () => {
               border: tabFilter === 'settled' ? '1px solid var(--border-color)' : 'none'
             }}
           >
-            పూర్తయినవి ({settledCustomers.length})
+            {t('rec.tab_settled', 'Settled')} ({settledCustomers.length})
           </button>
         </div>
 
@@ -194,13 +196,13 @@ export const ReceivablesView: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="కస్టమర్ పేరు లేదా మారుపేరు..."
+            placeholder={t('rec.search_placeholder', 'Search customer name or alias...')}
             style={{
               width: '100%',
               background: 'var(--bg-card)',
               border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-md)',
-              padding: '9px 14px 9px 36px',
+              padding: '8px 12px 8px 36px',
               color: 'var(--text-main)',
               fontSize: '0.85rem',
               outline: 'none'
@@ -209,114 +211,97 @@ export const ReceivablesView: React.FC = () => {
         </div>
       </div>
 
-      {/* Customer Receivables Table */}
-      <div className="fin-card" style={{ padding: '0px', overflow: 'hidden' }}>
-        {filtered.length === 0 ? (
-          <div style={{ padding: '48px 16px', textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.9rem' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '8px' }}>🎉</div>
-            <strong style={{ color: 'var(--text-main)', fontSize: '1rem' }}>
-              {tabFilter === 'active' ? 'ప్రస్తుతం ఎలాంటి పెండింగ్ బాకీలు లేవు!' : 'ఖాతాలు ఏవీ కనుగొనబడలేదు.'}
-            </strong>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-              {tabFilter === 'active' 
-                ? 'అన్ని కస్టమర్ చెల్లింపులు పూర్తయ్యాయి లేదా వచ్చిన నగదు కింద నమోదయ్యాయి.' 
-                : 'వాయిస్ లేదా చాట్ లో లావాదేవీని నమోదు చేయండి.'}
-            </div>
+      {/* Customers List Table */}
+      <div className="fin-card" style={{ padding: 0, overflow: 'hidden' }}>
+        {loading ? (
+          <div style={{ padding: '36px', textAlign: 'center', color: 'var(--text-muted)' }}>
+            {t('dash.loading', 'Loading financial overview and double-entry accounts...')}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div style={{ padding: '36px', textAlign: 'center', color: 'var(--text-muted)' }}>
+            {t('rec.no_customers', 'No customer accounts found matching your search.')}
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table className="khata-table">
-              <thead>
-                <tr>
-                  <th>కస్టమర్ పేరు (Customer)</th>
-                  <th>మారుపేర్లు (Aliases)</th>
-                  <th style={{ textAlign: 'right' }}>రావాల్సిన బాకీ (Outstanding Balance)</th>
-                  <th>క్రెడిట్ స్కోర్ (Score)</th>
-                  <th>రిస్క్ స్థాయి (Risk)</th>
-                  <th>చివరి చెల్లింపు (Last Payment)</th>
-                  <th style={{ textAlign: 'center' }}>రిమైండర్ (Reminder)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((c) => {
-                  const hasDue = (c.outstanding_balance || 0) > 0;
-                  return (
-                    <tr key={c.id}>
-                      <td style={{ fontWeight: 700, color: 'var(--text-main)', cursor: 'pointer' }} onClick={() => handleOpenStatement(c)}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ color: 'var(--text-main)', textDecoration: 'underline', textDecorationColor: 'var(--border-strong)' }}>{c.name}</span>
-                          <Eye size={14} color="var(--text-dim)" />
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <thead>
+              <tr style={{ background: 'var(--bg-card-subtle)', borderBottom: '1px solid var(--border-color)' }}>
+                <th style={{ padding: '12px 16px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+                  {t('rec.th_customer', 'Customer Name')}
+                </th>
+                <th style={{ padding: '12px 16px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+                  {t('rec.th_phone', 'Phone Number')}
+                </th>
+                <th style={{ padding: '12px 16px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+                  {t('rec.th_balance', 'Pending Balance')}
+                </th>
+                <th style={{ padding: '12px 16px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+                  {t('rec.th_status', 'Status')}
+                </th>
+                <th style={{ padding: '12px 16px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', textAlign: 'right' }}>
+                  {t('rec.th_actions', 'Actions')}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((cust) => {
+                const bal = cust.outstanding_balance || 0;
+                const isDue = bal > 0;
+                return (
+                  <tr key={cust.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-main)' }}>
+                        {cust.name}
+                      </div>
+                      {cust.aliases && cust.aliases.length > 0 && (
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '2px' }}>
+                          {cust.aliases.join(', ')}
                         </div>
-                        {c.name_telugu && c.name_telugu !== c.name && (
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', fontWeight: 400 }}>
-                            {c.name_telugu}
-                          </span>
-                        )}
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                          {c.aliases && c.aliases.length > 0 ? (
-                            c.aliases.slice(0, 3).map((a: string, idx: number) => (
-                              <span key={idx} className="badge badge-neutral" style={{ fontSize: '0.68rem' }}>{a}</span>
-                            ))
-                          ) : (
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>—</span>
-                          )}
-                        </div>
-                      </td>
-                      <td style={{ textAlign: 'right' }}>
-                        {hasDue ? (
-                          <span style={{ fontWeight: 800, color: 'var(--jama-green)', fontSize: '0.95rem' }}>
-                            ₹{Number(c.outstanding_balance).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                          </span>
-                        ) : (
-                          <span className="badge badge-emerald" style={{ fontSize: '0.72rem' }}>
-                            ✓ ₹0.00 (పూర్తయింది)
-                          </span>
-                        )}
-                      </td>
-                      <td>
-                        <span className={`badge ${c.credit_score >= 750 ? 'badge-emerald' : c.credit_score >= 650 ? 'badge-amber' : 'badge-rose'}`} style={{ fontSize: '0.75rem' }}>
-                          {c.credit_score || 700}
-                        </span>
-                      </td>
-                      <td>
-                        <span className={`badge ${c.risk_tier === 'LOW' ? 'badge-emerald' : c.risk_tier === 'MEDIUM' ? 'badge-amber' : 'badge-rose'}`} style={{ fontSize: '0.72rem' }}>
-                          {c.risk_tier || 'LOW'}
-                        </span>
-                      </td>
-                      <td style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>
-                        {c.last_payment_date || 'ఇంకా నమోదు కాలేదు'}
-                      </td>
-                      <td style={{ textAlign: 'center' }}>
-                        <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                      )}
+                    </td>
+                    <td style={{ padding: '14px 16px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                      {cust.phone || '—'}
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <span style={{ fontWeight: 800, fontSize: '1.05rem', color: isDue ? 'var(--jama-green)' : 'var(--text-muted)' }}>
+                        ₹{bal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </span>
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <span
+                        className={`badge ${isDue ? 'badge-jama' : 'badge-neutral'}`}
+                        style={{ fontSize: '0.72rem', padding: '3px 8px', fontWeight: 600 }}
+                      >
+                        {isDue ? t('term.receivable', 'Pending Due') : t('rec.tab_settled', 'Settled')}
+                      </span>
+                    </td>
+                    <td style={{ padding: '14px 16px', textAlign: 'right' }}>
+                      <div style={{ display: 'inline-flex', gap: '8px' }}>
+                        {isDue && (
                           <button
-                            onClick={() => handleOpenStatement(c)}
-                            className="btn-outline"
-                            style={{ padding: '5px 10px', fontSize: '0.74rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                            title="ఖాతా వివరాలు (View Statement)"
+                            onClick={() => handleOpenReminder(cust)}
+                            className="btn btn-secondary"
+                            style={{ padding: '6px 12px', fontSize: '0.75rem', fontWeight: 600 }}
                           >
-                            <FileText size={13} /> స్టేట్‌మెంట్
+                            💬 {t('term.send_reminder', 'Send Reminder')}
                           </button>
-                          {hasDue && (
-                            <button
-                              onClick={() => handleOpenReminder(c)}
-                              className="btn btn-emerald"
-                              style={{ padding: '5px 10px', fontSize: '0.74rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                            >
-                              <Smartphone size={13} /> రిమైండర్
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        )}
+                        <button
+                          onClick={() => handleOpenStatement(cust)}
+                          className="btn btn-outline"
+                          style={{ padding: '6px 12px', fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                        >
+                          <Eye size={13} /> {t('term.view_details', 'Statement')}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         )}
       </div>
+
     </div>
   );
 };

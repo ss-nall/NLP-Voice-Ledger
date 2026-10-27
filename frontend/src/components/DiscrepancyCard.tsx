@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertTriangle, CheckCircle2, X, Check } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export interface DiscrepancyCardProps {
   data: {
@@ -29,9 +30,10 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
   onCancel,
   isProcessing = false
 }) => {
+  const { t } = useLanguage();
   const currentBalance = Number(data.current_balance || 0);
   const proposedAmount = Number(data.proposed_event?.amount || 0);
-  const actor = data.proposed_event?.actor || 'ఈ ఖాతా';
+  const actor = data.proposed_event?.actor || 'Account';
   const excess = Number(data.excess_amount || Math.max(0, proposedAmount - currentBalance));
   const isDuplicate = data.discrepancy_type === 'POTENTIAL_DUPLICATE_TRANSACTION';
   const isOverpayment = data.discrepancy_type === 'OVERPAYMENT_EXCEEDS_BALANCE' || (excess > 0 && proposedAmount > currentBalance && currentBalance > 0);
@@ -56,8 +58,8 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
         {data.cancelled ? <X size={16} /> : <CheckCircle2 size={16} />}
         <span>
           {data.cancelled
-            ? 'ఈ లావాదేవీ రద్దు చేయబడింది (Transaction Cancelled)'
-            : (data.resolvedText || 'ఖాతా వ్యత్యాసం పరిష్కరించబడింది (Discrepancy Resolved)')}
+            ? (t('btn.cancel', 'Cancelled') + ': Transaction Discarded')
+            : (data.resolvedText || 'Discrepancy Resolved')}
         </span>
       </div>
     );
@@ -86,10 +88,10 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
           </div>
           <span>
             {isDuplicate
-              ? 'పునరావృత నమోదు తనిఖీ (Duplicate Check)'
+              ? 'Potential Duplicate Check'
               : isOverpayment
-              ? 'అదనపు చెల్లింపు తనిఖీ (Excess Payment Check)'
-              : 'ఖాతా వ్యత్యాసం సరిచూడండి (Ledger Balance Mismatch)'}
+              ? 'Excess Payment Verification'
+              : 'Ledger Balance Mismatch'}
           </span>
         </div>
         <span
@@ -122,13 +124,13 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
             }}
           >
             <span style={{ fontSize: '0.72rem', color: '#B45309', fontWeight: 700, textTransform: 'uppercase' }}>
-              పుస్తకంలో బాకీ (Book Balance)
+              {t('term.balance', 'Book Balance')}
             </span>
             <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#D97706', marginTop: '4px' }}>
               ₹{currentBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </div>
             <span style={{ fontSize: '0.7rem', color: 'var(--text-muted, #64748b)', marginTop: '2px' }}>
-              {actor} పాత లెక్క
+              {actor}
             </span>
           </div>
 
@@ -144,13 +146,13 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
             }}
           >
             <span style={{ fontSize: '0.72rem', color: '#0284C7', fontWeight: 700, textTransform: 'uppercase' }}>
-              చెప్పిన మొత్తం (Spoken Value)
+              {t('term.amount', 'Spoken Value')}
             </span>
             <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0284C7', marginTop: '4px' }}>
               ₹{proposedAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </div>
             <span style={{ fontSize: '0.7rem', color: 'var(--text-muted, #64748b)', marginTop: '2px' }}>
-              తాజా మాట
+              Input
             </span>
           </div>
 
@@ -167,13 +169,13 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
               }}
             >
               <span style={{ fontSize: '0.72rem', color: '#059669', fontWeight: 700, textTransform: 'uppercase' }}>
-                అదనపు మొత్తం (Advance Credit)
+                Advance Credit
               </span>
               <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#059669', marginTop: '4px' }}>
                 +₹{excess.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </div>
               <span style={{ fontSize: '0.7rem', color: 'var(--text-muted, #64748b)', marginTop: '2px' }}>
-                ఖాతాలో జమ అవుతుంది
+                Credit balance
               </span>
             </div>
           )}
@@ -195,7 +197,7 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
             ₹{proposedAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.82rem', color: 'var(--text-muted, #64748b)' }}>
-            ఈ మొత్తం <strong style={{ color: 'var(--text-main, #1e293b)' }}>{actor}</strong> ఖాతాలో కాసేపటి క్రితం మాత్రమే నమోదు చేయబడింది.
+            This entry was recently recorded for <strong style={{ color: 'var(--text-main, #1e293b)' }}>{actor}</strong>.
           </div>
         </div>
       )}
@@ -223,7 +225,7 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
                 transition: 'all 0.15s ease'
               }}
             >
-              <CheckCircle2 size={17} /> బాకీ ₹{currentBalance.toLocaleString()} క్లియర్ చేసి + ₹{excess.toLocaleString()} అడ్వాన్స్‌గా జమ చేయి
+              <CheckCircle2 size={17} /> Clear ₹{currentBalance.toLocaleString()} & add +₹{excess.toLocaleString()} as advance
             </button>
 
             <button
@@ -244,7 +246,7 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
                 cursor: 'pointer'
               }}
             >
-              చెప్పిన మొత్తం ₹{proposedAmount.toLocaleString()} మాత్రమే రికార్డ్ చేయి (Record Full ₹{proposedAmount.toLocaleString()})
+              Record full ₹{proposedAmount.toLocaleString()} only
             </button>
           </>
         ) : isDuplicate ? (
@@ -267,7 +269,7 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
                 cursor: 'pointer'
               }}
             >
-              <Check size={16} /> అవును, మళ్ళీ నమోదు చేయి (Yes, Record Again)
+              <Check size={16} /> Yes, record again
             </button>
           </>
         ) : (
@@ -291,7 +293,7 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
                 transition: 'all 0.15s ease'
               }}
             >
-              <CheckCircle2 size={17} /> అవును, మొత్తం బాకీ ₹{currentBalance.toLocaleString()} క్లియర్ చేయి (Clear Full Balance)
+              <CheckCircle2 size={17} /> Clear full balance ₹{currentBalance.toLocaleString()}
             </button>
 
             {proposedAmount > 0 && proposedAmount !== currentBalance && (
@@ -313,7 +315,7 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
                   cursor: 'pointer'
                 }}
               >
-                చెప్పిన ₹{proposedAmount.toLocaleString()} మాత్రమే రికార్డ్ చేయి (Record Spoken Only)
+                Record spoken ₹{proposedAmount.toLocaleString()} only
               </button>
             )}
           </>
@@ -339,7 +341,7 @@ export const DiscrepancyCard: React.FC<DiscrepancyCardProps> = ({
             marginTop: '2px'
           }}
         >
-          <X size={14} /> రద్దు చేయి (Cancel / Discard)
+          <X size={14} /> {t('btn.cancel', 'Cancel / Discard')}
         </button>
       </div>
     </div>

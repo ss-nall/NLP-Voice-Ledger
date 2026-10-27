@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
+import { LoginView } from './views/LoginView';
 import { DashboardView } from './views/DashboardView';
 import { ConversationView } from './views/ConversationView';
 import { RemindersView } from './views/RemindersView';
@@ -13,8 +16,13 @@ import { PaidView } from './views/PaidView';
 import { HealthView } from './views/HealthView';
 import { SettingsView } from './views/SettingsView';
 
-export const AppContent: React.FC = () => {
+export const MainAppLayout: React.FC = () => {
+  const { isAuthenticated } = useAuth();
   const [currentView, setCurrentView] = useState<string>('dashboard');
+
+  if (!isAuthenticated) {
+    return <LoginView />;
+  }
 
   const renderCurrentView = () => {
     switch (currentView) {
@@ -61,7 +69,11 @@ export const AppContent: React.FC = () => {
 export const App: React.FC = () => {
   return (
     <ThemeProvider>
-      <AppContent />
+      <LanguageProvider>
+        <AuthProvider>
+          <MainAppLayout />
+        </AuthProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 };

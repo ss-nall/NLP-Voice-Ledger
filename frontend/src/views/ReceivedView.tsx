@@ -4,21 +4,16 @@ import {
   Search,
   CheckCircle,
   MessageSquare,
-  Smartphone,
-  Calendar,
-  Layers,
-  FileCheck,
-  ShieldCheck,
-  TrendingUp,
-  Receipt,
   Edit2,
   Trash2
 } from 'lucide-react';
 import { api } from '../api/client';
 import { EditTransactionModal } from '../components/EditTransactionModal';
 import { useLedgerUpdated } from '../utils/events';
+import { useLanguage } from '../context/LanguageContext';
 
 export const ReceivedView: React.FC = () => {
+  const { t, language } = useLanguage();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [methodFilter, setMethodFilter] = useState('');
@@ -50,6 +45,11 @@ export const ReceivedView: React.FC = () => {
           t.source_text.toLowerCase().includes('ichadu') ||
           t.source_text.toLowerCase().includes('vachindi') ||
           t.source_text.toLowerCase().includes('settle') ||
+          t.source_text.toLowerCase().includes('kattadu') ||
+          t.source_text.toLowerCase().includes('kuduthan') ||
+          t.source_text.toLowerCase().includes('kodutha') ||
+          t.source_text.toLowerCase().includes('diye') ||
+          t.source_text.toLowerCase().includes('mil gaya') ||
           t.source_text.toLowerCase().includes('చెల్లించాడు') ||
           t.source_text.toLowerCase().includes('ఇచ్చాడు') ||
           t.source_text.toLowerCase().includes('వచ్చింది')
@@ -64,7 +64,7 @@ export const ReceivedView: React.FC = () => {
   };
 
   const handleDeleteDirect = async (txId: string) => {
-    if (window.confirm("ఈ రశీదును తొలగించాలనుకుంటున్నారా? కస్టమర్ బాకీ నిల్వ ఆటోమేటిక్ గా సరిచేయబడుతుంది.")) {
+    if (window.confirm(t('recv.confirm_delete', 'Are you sure you want to delete this payment receipt? Customer balance will be automatically adjusted.'))) {
       try {
         await api.deleteTransaction(txId);
         loadReceivedTransactions();
@@ -89,10 +89,15 @@ export const ReceivedView: React.FC = () => {
   const cashReceived = totalReceived - upiReceived;
 
   const handleShareReceipt = (tx: any) => {
-    const msg = encodeURIComponent(
-      `🙏 నమస్కారం ${tx.counterparty_name} గారు!\n\nమీ నుండి ₹${Number(tx.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })} నగదు విజయవంతంగా అందింది.\nతేదీ: ${tx.date}\nరసీదు నెం: #${tx.id}\nమిగిలిన బాకీ నిల్వ: ₹${Number(tx.balance_after || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}\n\nధన్యవాదాలు! - మీ దుకాణం లెక్కలు.`
-    );
-    window.open(`https://wa.me/?text=${msg}`, '_blank');
+    const template = t('wa.receipt_msg', '🙏 Hello {name}!\n\nWe have successfully received payment of ₹{amount}.\nDate: {date}\nReceipt #: #{id}\nRemaining Balance: ₹{balance}\n\nThank you! - Your Ledger.');
+    const formatted = template
+      .replace('{name}', tx.counterparty_name || '')
+      .replace('{amount}', Number(tx.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }))
+      .replace('{date}', tx.date || '')
+      .replace('{id}', String(tx.id || ''))
+      .replace('{balance}', Number(tx.balance_after || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+    
+    window.open(`https://wa.me/?text=${encodeURIComponent(formatted)}`, '_blank');
   };
 
   return (
@@ -105,10 +110,10 @@ export const ReceivedView: React.FC = () => {
             <span style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--jama-green-bg)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--jama-green)' }}>
               <ArrowDownLeft size={20} />
             </span>
-            వచ్చిన నగదు & వసూళ్లు (Received Collections)
+            {t('recv.title', 'Received Inflows & Collections')}
           </h2>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            కస్టమర్ల నుండి అందిన చెల్లింపులు, వసూలైన నగదు రశీదులు మరియు సెటిల్‌మెంట్స్ రికార్డు.
+            {t('recv.desc', 'All customer cash receipts, online UPI collections, and receivable reductions.')}
           </p>
         </div>
       </div>
@@ -117,37 +122,37 @@ export const ReceivedView: React.FC = () => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
         <div className="fin-card fin-card-green">
           <div style={{ fontSize: '0.75rem', color: 'var(--jama-green-text)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
-            మొత్తం వసూలైన నగదు (Total Received)
+            {t('recv.total_inflow', 'Total Inflows Received')}
           </div>
           <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--jama-green)', marginTop: '4px' }}>
             ₹{totalReceived.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--jama-green-text)', marginTop: '4px' }}>
-            👥 మొత్తం <strong>{transactions.length}</strong> చెల్లింపు రశీదులు
+            👥 <strong>{transactions.length}</strong> {t('recv.tx_count', 'collections recorded')}
           </div>
         </div>
 
         <div className="fin-card">
           <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
-            నగదు వసూళ్లు (Cash Inflow)
+            {t('recv.cash_inflow', 'Cash Inflow')}
           </div>
           <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--text-main)', marginTop: '4px' }}>
             ₹{cashReceived.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            ప్రత్యక్ష నగదు రూపంలో అందిన మొత్తం
+            {t('recv.cash_sub', 'Direct physical cash received')}
           </div>
         </div>
 
         <div className="fin-card">
           <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
-            యూపీఐ / ఆన్‌లైన్ (UPI & Digital)
+            {t('recv.upi_inflow', 'UPI & Digital')}
           </div>
           <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--cyan)', marginTop: '4px' }}>
             ₹{upiReceived.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            PhonePe, GPay, Paytm కలెక్షన్లు
+            {t('recv.upi_sub', 'PhonePe, GPay, Paytm collections')}
           </div>
         </div>
       </div>
@@ -160,7 +165,7 @@ export const ReceivedView: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="కస్టమర్ పేరు లేదా వివరాలతో వెతకండి (Search received)..."
+            placeholder={t('recv.search_placeholder', 'Search received transaction or customer...')}
             style={{
               width: '100%',
               background: 'var(--bg-card)',
@@ -180,21 +185,21 @@ export const ReceivedView: React.FC = () => {
             className={`btn ${methodFilter === '' ? 'btn-primary' : 'btn-secondary'}`}
             style={{ padding: '8px 14px', fontSize: '0.82rem' }}
           >
-            అన్ని పద్ధతులు (All)
+            {t('recv.tab_all', 'All Methods')}
           </button>
           <button
             onClick={() => setMethodFilter('cash')}
             className={`btn ${methodFilter === 'cash' ? 'btn-emerald' : 'btn-secondary'}`}
             style={{ padding: '8px 14px', fontSize: '0.82rem' }}
           >
-            నగదు (Cash)
+            {t('recv.tab_cash', 'Cash')}
           </button>
           <button
             onClick={() => setMethodFilter('upi')}
             className={`btn ${methodFilter === 'upi' ? 'btn-emerald' : 'btn-secondary'}`}
             style={{ padding: '8px 14px', fontSize: '0.82rem' }}
           >
-            UPI / Digital
+            {t('recv.tab_upi', 'UPI / Digital')}
           </button>
         </div>
       </div>
@@ -203,16 +208,16 @@ export const ReceivedView: React.FC = () => {
       <div className="fin-card" style={{ padding: '0', overflow: 'hidden' }}>
         {loading ? (
           <div style={{ padding: '36px 16px', textAlign: 'center', color: 'var(--text-muted)' }}>
-            వసూళ్ల వివరాలు లోడ్ అవుతున్నాయి...
+            {t('recv.loading', 'Loading received payment transactions...')}
           </div>
         ) : filtered.length === 0 ? (
           <div style={{ padding: '48px 16px', textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.92rem' }}>
             <div style={{ fontSize: '2rem', marginBottom: '8px' }}>💰</div>
             <div style={{ fontWeight: 700, color: 'var(--text-main)', marginBottom: '4px' }}>
-              ఇంకా ఏ వసూళ్లు నమోదు కాలేదు (No Received Payments Yet)
+              {t('recv.no_records_title', 'No Received Payments Yet')}
             </div>
             <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              కస్టమర్ డబ్బులు ఇచ్చినప్పుడు వాయిస్ లో 'రమేష్ 1000 ఇచ్చాడు' లేదా 'Customer 500 ichadu' అని చెప్పండి!
+              {t('recv.no_records_sub', 'When a customer pays, record via voice or chat!')}
             </span>
           </div>
         ) : (
@@ -220,15 +225,15 @@ export const ReceivedView: React.FC = () => {
             <table className="fin-table">
               <thead>
                 <tr>
-                  <th style={{ minWidth: '100px' }}>రశీదు #</th>
-                  <th style={{ minWidth: '110px' }}>తేదీ (Date)</th>
-                  <th style={{ minWidth: '160px' }}>కస్టమర్ పేరు (Customer)</th>
-                  <th style={{ minWidth: '130px' }}>రకం (Type)</th>
-                  <th style={{ minWidth: '130px', textAlign: 'right' }}>స్వీకరించిన నగదు (Received ₹)</th>
-                  <th style={{ minWidth: '120px', textAlign: 'right' }}>మిగిలిన బాకీ (Balance)</th>
-                  <th style={{ minWidth: '110px' }}>విధానం (Method)</th>
-                  <th style={{ minWidth: '110px', textAlign: 'center' }}>వాట్సాప్ రశీదు (Receipt)</th>
-                  <th style={{ minWidth: '130px', textAlign: 'center' }}>చర్యలు (Actions)</th>
+                  <th style={{ minWidth: '100px' }}>{t('recv.th_receipt_no', 'Receipt #')}</th>
+                  <th style={{ minWidth: '110px' }}>{t('recv.th_date', 'Date')}</th>
+                  <th style={{ minWidth: '160px' }}>{t('recv.th_customer', 'Customer Name')}</th>
+                  <th style={{ minWidth: '130px' }}>{t('recv.th_type', 'Type')}</th>
+                  <th style={{ minWidth: '130px', textAlign: 'right' }}>{t('recv.th_amount', 'Received Amount')}</th>
+                  <th style={{ minWidth: '120px', textAlign: 'right' }}>{t('recv.th_balance', 'Balance Remaining')}</th>
+                  <th style={{ minWidth: '110px' }}>{t('recv.th_method', 'Method')}</th>
+                  <th style={{ minWidth: '110px', textAlign: 'center' }}>{t('recv.th_wa_receipt', 'WhatsApp Receipt')}</th>
+                  <th style={{ minWidth: '130px', textAlign: 'center' }}>{t('recv.th_actions', 'Actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -253,7 +258,7 @@ export const ReceivedView: React.FC = () => {
                     <td>
                       <span className="badge badge-jama" style={{ fontSize: '0.72rem' }}>
                         <CheckCircle size={12} />
-                        {tx.transaction_type === 'SETTLEMENT' ? 'పూర్తి సెటిల్మెంట్' : 'నగదు వసూలు'}
+                        {tx.transaction_type === 'SETTLEMENT' ? t('recv.type_settlement', 'Full Settlement') : t('recv.type_collection', 'Cash Receipt')}
                       </span>
                     </td>
                     <td style={{ textAlign: 'right', fontWeight: 800, fontSize: '1.05rem', color: 'var(--jama-green)' }}>
@@ -274,7 +279,7 @@ export const ReceivedView: React.FC = () => {
                         style={{ padding: '5px 10px', fontSize: '0.74rem' }}
                         title="Send WhatsApp Payment Confirmation Receipt"
                       >
-                        <MessageSquare size={13} /> రశీదు పంపు
+                        <MessageSquare size={13} /> {t('recv.send_receipt_btn', 'Send Receipt')}
                       </button>
                     </td>
                     <td style={{ textAlign: 'center' }}>
@@ -289,7 +294,7 @@ export const ReceivedView: React.FC = () => {
                           style={{ padding: '4px 8px', fontSize: '0.72rem', display: 'inline-flex', alignItems: 'center', gap: '3px' }}
                           title="Edit Received Payment"
                         >
-                          <Edit2 size={12} /> సవరించు
+                          <Edit2 size={12} /> {t('btn.edit', 'Edit')}
                         </button>
                         <button
                           type="button"
@@ -298,7 +303,7 @@ export const ReceivedView: React.FC = () => {
                           style={{ padding: '4px 8px', fontSize: '0.72rem', display: 'inline-flex', alignItems: 'center', gap: '3px' }}
                           title="Delete Received Payment"
                         >
-                          <Trash2 size={12} /> తొలగించు
+                          <Trash2 size={12} /> {t('btn.delete', 'Delete')}
                         </button>
                       </div>
                     </td>

@@ -1,5 +1,5 @@
 """
-Financial Event Extraction & Representation Module.
+Multi-Lingual Financial Event Extraction & Representation Module.
 Assembles raw NLP features into an auditable, standardized FinancialEvent schema.
 """
 
@@ -70,23 +70,25 @@ class FinancialEventBuilder:
         if rel_type == "PROMISED_TO_PAY":
             event_type = "payment_commitment"
             if not due_date:
-                # Default to next week if not specified in text
                 due_date = (datetime.now()).strftime("%Y-%m-%d")
-        elif rel_type == "PAYMENT_RECEIVED":
-            event_type = "partial_payment"  # Ledger service checks if it's full or partial
+        elif rel_type in ["PAYMENT_RECEIVED", "PAID"]:
+            if direction == "payable":
+                event_type = "payment_made"
+            else:
+                event_type = "partial_payment"
         elif rel_type == "PAYMENT_MADE":
             event_type = "payment_made"
         elif rel_type == "SETTLED":
             event_type = "full_settlement"
-        elif rel_type == "ADVANCE_PAID_BY_BUSINESS" or rel_type == "ADVANCE_RECEIVED":
+        elif rel_type in ["ADVANCE", "ADVANCE_PAID_BY_BUSINESS", "ADVANCE_RECEIVED"]:
             event_type = "advance_payment"
         elif rel_type == "CREDIT_SALE":
             event_type = "credit_sale"
         elif rel_type == "PURCHASE":
             event_type = "purchase"
-        elif rel_type == "PAYABLE":
+        elif rel_type in ["PAYABLE", "OWES"] and direction == "payable":
             event_type = "payable_obligation"
-        elif rel_type == "RECEIVABLE":
+        elif rel_type in ["RECEIVABLE", "OWES"] and direction == "receivable":
             event_type = "receivable_invoice"
         else:
             event_type = "general_entry"
@@ -96,6 +98,15 @@ class FinancialEventBuilder:
         rel_conf = relation.get("confidence", 0.85)
         lang_conf = lang_info.get("confidence", 0.9)
         overall_confidence = round((ent_conf * 0.4 + rel_conf * 0.4 + lang_conf * 0.2), 2)
+        
+        # Collect temporal spans & invoice metadata
+        temp_spans = [t["raw_span"] for t in temporal_info]
+        inv_list = [i["invoice_number"] for i in entities.get("invoices", [])]
+        
+        primary_lang = lang_info.get("primary_language", "english")
+        is_mixed = lang_info.get("is_code_mixed", False)
+        
+        explanation = relation.get("explanation", f"Recorded financial event for {actor_name}.")
         
         return FinancialEvent(
             event_type=event_type,
@@ -109,12 +120,12 @@ class FinancialEventBuilder:
             due_date=due_date,
             source_text=raw_text,
             confidence=overall_confidence,
-            explanation=relation.get("explanation", ""),
+            explanation=explanation,
             metadata={
-                "language": lang_info.get("primary_language", "mixed"),
-                "is_code_mixed": lang_info.get("is_code_mixed", False),
-                "temporal_spans": [t["raw_span"] for t in temporal_info],
-                "invoices": entities.get("invoices", [])
+                "language": primary_lang,
+                "is_code_mixed": is_mixed,
+                "temporal_spans": temp_spans,
+                "invoices": inv_list
             }
         )
 

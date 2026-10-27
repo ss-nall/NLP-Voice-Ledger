@@ -1,30 +1,29 @@
 """
-Speech Processing & Spoken Telugu Numeral Parsing Engine.
-Converts spoken audio and voice transcripts with Telugu/English code-mixed spoken numerals
-into normalized numerical values, extracted entities, and speech synthesis responses.
+Speech Processing & Spoken Indic Numeral Parsing Engine.
+Converts spoken audio and voice transcripts with Telugu/Tamil/Hindi/Kannada/Malayalam/Urdu/Gujarati/English
+code-mixed spoken numerals into normalized numerical values, extracted entities, and multi-lingual speech synthesis responses.
 """
 
 import re
 import math
 from typing import Dict, Any, List, Tuple, Optional
 from datetime import datetime
-from backend.app.nlp.telugu_lexicon import TELUGU_NUMERALS, TEMPORAL_LEXICON, DIRECTION_MARKERS, PAYMENT_METHODS
+from backend.app.nlp.indic_lexicon import (
+    ALL_INDIC_NUMERALS, ALL_TEMPORAL_LEXICON, ALL_DIRECTION_MARKERS, ALL_PAYMENT_METHODS
+)
 
-class TeluguSpokenNumberParser:
+class IndicSpokenNumberParser:
     """
-    Decodes complex spoken Indic/Telugu numerals and mixed phrases into exact integers.
-    Examples:
-      - 'aidhu vandalu' -> 500
-      - 'rendu vela five hundred' -> 2500
-      - 'nalabhai vela' -> 40000
-      - 'oka laksha yaabhai vela' -> 150000
-      - 'mudu vela rendu vandala yaabhai' -> 3250
+    Decodes complex spoken Indic (Telugu, Tamil, Hindi, Kannada, Malayalam, Urdu, Gujarati)
+    and Indian-accented English numerals into exact numbers.
     """
     
     @staticmethod
     def parse_spoken_number(text: str) -> Optional[int]:
-        # Tokenize while preserving comma-separated digits, decimals, and metric suffixes (e.g. 50,000, 1,50,000.50, 25k)
-        tokens = re.findall(r'\d{1,3}(?:,\d{2,3})+(?:\.\d+)?k?|\d+(?:\.\d+)?k?|[a-zA-Z0-9\u0C00-\u0C7F]+', text.lower())
+        tokens = re.findall(
+            r'\d{1,3}(?:,\d{2,3})+(?:\.\d+)?k?|\d+(?:\.\d+)?k?|[a-zA-Z0-9\u0C00-\u0C7F\u0B80-\u0BFF\u0900-\u097F\u0C80-\u0CFF\u0D00-\u0D7F\u0600-\u06FF\u0A80-\u0AFF]+',
+            text.lower()
+        )
         if not tokens:
             return None
             
@@ -36,7 +35,7 @@ class TeluguSpokenNumberParser:
         while i < len(tokens):
             token = tokens[i]
             
-            # Check if formatted digit with commas (e.g. 50,000 or 1,50,000 or 50,000.50)
+            # Formatted digit with commas
             if ',' in token and re.match(r'^\d{1,3}(?:,\d{2,3})+(?:\.\d+)?k?$', token):
                 clean_t = token.replace(',', '')
                 if clean_t.endswith('k'):
@@ -48,7 +47,7 @@ class TeluguSpokenNumberParser:
                 i += 1
                 continue
 
-            # Check if direct digit with 'k' suffix (e.g. '5k', '25k', '1.5k')
+            # Direct digit with 'k' suffix
             k_match = re.match(r'^(\d+(?:\.\d+)?)\s*k$', token)
             if k_match:
                 val = float(k_match.group(1)) * 1000.0
@@ -58,19 +57,19 @@ class TeluguSpokenNumberParser:
                 i += 1
                 continue
 
-            # Check if direct digit or decimal
+            # Direct digit or decimal
             if token.isdigit() or re.match(r'^\d+\.\d+$', token):
                 current_multiplier_group += float(token)
                 has_num = True
                 i += 1
                 continue
                 
-            # Check Telugu / Indian accent number word
-            if token in TELUGU_NUMERALS:
-                val = float(TELUGU_NUMERALS[token])
+            # Indic number lookup
+            if token in ALL_INDIC_NUMERALS:
+                val = float(ALL_INDIC_NUMERALS[token])
                 has_num = True
                 
-                # Fused large numbers (e.g. padivela=10000, iravaivela=20000, పదివేలు=10000, etc.)
+                # Fused compounds (e.g. padivela=10000, patthaayiram=10000, dashazar=10000, etc.)
                 if val >= 1000 and val not in [1000.0, 100000.0, 10000000.0]:
                     total += current_multiplier_group + val
                     current_multiplier_group = 0.0
@@ -79,17 +78,16 @@ class TeluguSpokenNumberParser:
                         current_multiplier_group = 1.0
                     total += current_multiplier_group * val
                     current_multiplier_group = 0.0
-                elif val == 1000.0: # Thousand / Vela / Thouzad / Thoujand
+                elif val == 1000.0: # Thousand
                     if current_multiplier_group == 0.0:
                         current_multiplier_group = 1.0
                     total += current_multiplier_group * val
                     current_multiplier_group = 0.0
-                elif val == 100.0: # Hundred / Vanda / Hunderd
+                elif val == 100.0: # Hundred
                     if current_multiplier_group == 0.0:
                         current_multiplier_group = 1.0
                     current_multiplier_group = current_multiplier_group * val
                 else:
-                    # Units or Tens
                     current_multiplier_group += val
                     
             i += 1
@@ -102,30 +100,29 @@ class TeluguSpokenNumberParser:
     @classmethod
     def replace_spoken_numbers_in_text(cls, text: str) -> Tuple[str, List[Dict[str, Any]]]:
         """
-        Scans text for sequences of spoken numbers and replaces them with standard digits
-        while returning exact span mappings. Pre-processes Telugu sandhi.
+        Scans text for sequences of spoken numbers across 8 languages
+        and replaces them with standard digits while returning exact span mappings.
         """
-        from backend.app.nlp.transliteration import split_telugu_sandhi
-        text = split_telugu_sandhi(text)
+        from backend.app.nlp.transliteration import split_indic_sandhi
+        text = split_indic_sandhi(text)
         words = text.split()
         extracted_amounts = []
         
-        # Look for multi-word spoken number segments
-        # e.g., 'aidhu vandalu', 'rendu vela 500', 'nalabhai vela', '5 thouzad', '50,000'
         i = 0
         new_words = []
         
         while i < len(words):
-            # Check windows from 6 down to 1
             matched = False
             for window_size in range(6, 0, -1):
                 if i + window_size <= len(words):
                     segment = " ".join(words[i:i+window_size])
-                    # Tokenize while preserving formatted comma digits
-                    seg_tokens = re.findall(r'\d{1,3}(?:,\d{2,3})+(?:\.\d+)?k?|\d+(?:\.\d+)?k?|[a-zA-Z0-9\u0C00-\u0C7F]+', segment.lower())
+                    seg_tokens = re.findall(
+                        r'\d{1,3}(?:,\d{2,3})+(?:\.\d+)?k?|\d+(?:\.\d+)?k?|[a-zA-Z0-9\u0C00-\u0C7F\u0B80-\u0BFF\u0900-\u097F\u0C80-\u0CFF\u0D00-\u0D7F\u0600-\u06FF\u0A80-\u0AFF]+',
+                        segment.lower()
+                    )
                     is_num_seq = bool(seg_tokens) and all(
                         t.replace(',', '').replace('.', '', 1).isdigit() or
-                        t in TELUGU_NUMERALS or
+                        t in ALL_INDIC_NUMERALS or
                         bool(re.match(r'^\d+(?:\.\d+)?k$', t.replace(',', '')))
                         for t in seg_tokens
                     )
@@ -149,34 +146,21 @@ class TeluguSpokenNumberParser:
                 
         return " ".join(new_words), extracted_amounts
 
+TeluguSpokenNumberParser = IndicSpokenNumberParser
 
 class SpeechProcessor:
-    """
-    Handles speech audio ingestion, simulated acoustic waveforms,
-    speech recognition transcription, and Telugu spoken phrase extraction.
-    """
-    
     def __init__(self):
-        self.num_parser = TeluguSpokenNumberParser()
+        self.num_parser = IndicSpokenNumberParser()
         
     def process_spoken_transcript(self, raw_transcript: str, audio_metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        """
-        Takes raw transcribed audio text and normalizes spoken numbers, dialect idioms,
-        and generates audio pipeline diagnostics.
-        """
         normalized_text, spoken_amounts = self.num_parser.replace_spoken_numbers_in_text(raw_transcript)
         
-        # Calculate phonetic/audio confidence estimate
-        # Simulated acoustic clarity metric (or real if supplied via audio_metadata)
         confidence = 0.95
         if "confidence" in (audio_metadata or {}):
             confidence = float(audio_metadata["confidence"])
             
-        # Generate simulated audio waveform data points for UI visualizer
         waveform = self._generate_waveform_points(len(raw_transcript))
-        
-        # Generate bilingual TTS response string
-        spoken_response_te, spoken_response_en = self._generate_tts_confirmation(normalized_text, spoken_amounts)
+        tts_responses = self._generate_tts_confirmations(normalized_text, spoken_amounts)
         
         return {
             "raw_spoken_transcript": raw_transcript,
@@ -184,15 +168,11 @@ class SpeechProcessor:
             "spoken_amounts": spoken_amounts,
             "audio_confidence": confidence,
             "waveform_data": waveform,
-            "tts_response": {
-                "telugu": spoken_response_te,
-                "english": spoken_response_en
-            },
+            "tts_response": tts_responses,
             "timestamp": datetime.now().isoformat()
         }
         
     def _generate_waveform_points(self, length: int) -> List[float]:
-        """Generates realistic normalized audio frequency/amplitude bars for UI visualizer."""
         num_points = min(max(length * 2, 32), 64)
         points = []
         for i in range(num_points):
@@ -201,21 +181,52 @@ class SpeechProcessor:
             points.append(round(val, 2))
         return points
         
-    def _generate_tts_confirmation(self, normalized_text: str, spoken_amounts: List[Dict[str, Any]]) -> Tuple[str, str]:
-        """Creates natural spoken feedback for voice response."""
+    def _generate_tts_confirmations(self, normalized_text: str, spoken_amounts: List[Dict[str, Any]]) -> Dict[str, str]:
+        """Creates natural spoken feedback across all 8 languages."""
         amount_str = str(spoken_amounts[0]["parsed_amount"]) if spoken_amounts else "amount"
+        lower = normalized_text.lower()
         
-        if "ivvali" in normalized_text.lower():
-            te = f"₹{amount_str} చెల్లింపు రికార్డ్ చేశాము."
-            en = f"Recorded ₹{amount_str} payment due."
-        elif "ichadu" in normalized_text.lower() or "ichesa" in normalized_text.lower():
-            te = f"₹{amount_str} చెల్లింపు అందింది అని అప్‌డేట్ చేశాము."
-            en = f"Recorded ₹{amount_str} payment received."
+        is_payable = any(k in lower for k in [
+            "ivvali", "tharanum", "kodukkanum", "dena", "dena hai", "kodabeku", "deni hai", "aapvana",
+            "ఇవ్వాలి", "தர வேண்டும்", "देना है", "ಕೊಡಬೇಕು", "കൊടുക്കണം", "دینا ہے", "આપવાના છે", "pay"
+        ])
+        is_received = any(k in lower for k in [
+            "ichadu", "koduthaar", "diya", "ichesa", "koduthen", "maine diya", "kottaru", "thannu", "wasool", "aapya",
+            "ఇచ్చాడు", "கொடுத்தார்", "दिया", "ಕೊಟ್ಟರು", "തന്നു", "وصول ہوا", "મળ્યા", "received"
+        ])
+        
+        if is_payable:
+            return {
+                "telugu": f"₹{amount_str} చెల్లింపు బాకీ రికార్డ్ చేశాము.",
+                "tamil": f"₹{amount_str} செலுத்த வேண்டிய தொகையாக பதிவு செய்யப்பட்டது.",
+                "hindi": f"₹{amount_str} का बकाया भुगतान दर्ज कर लिया गया है।",
+                "kannada": f"₹{amount_str} ಪಾವತಿಸಬೇಕಾದ ಬಾಕಿ ದಾಖಲಾಗಿದೆ.",
+                "malayalam": f"₹{amount_str} നൽകാനുള്ള ബാക്കിയായി രേഖപ്പെടുത്തി.",
+                "urdu": f"₹{amount_str} کی واجب الادا رقم درج کر لی گئی ہے۔",
+                "gujarati": f"₹{amount_str} ચૂકવવાના બાકી તરીકે નોંધવામાં આવ્યા છે.",
+                "english": f"Recorded ₹{amount_str} payment due."
+            }
+        elif is_received:
+            return {
+                "telugu": f"₹{amount_str} చెల్లింపు అందింది అని అప్‌డేట్ చేశాము.",
+                "tamil": f"₹{amount_str} பணம் வரவாக வரவு வைக்கப்பட்டது.",
+                "hindi": f"₹{amount_str} का भुगतान प्राप्त होना दर्ज कर लिया गया है।",
+                "kannada": f"₹{amount_str} ಜಮಾ ರಸೀದಿ ದಾಖಲಾಗಿದೆ.",
+                "malayalam": f"₹{amount_str} തുക ലഭിച്ചതായി രേഖപ്പെടുത്തി.",
+                "urdu": f"₹{amount_str} کی وصولی درج کر لی گئی ہے۔",
+                "gujarati": f"₹{amount_str} ની આવક જમા કરવામાં આવી છે.",
+                "english": f"Recorded ₹{amount_str} payment received."
+            }
         else:
-            te = f"వివరాలు విజయవంతంగా రికార్డ్ చేశాము."
-            en = f"Transaction details recorded successfully."
-            
-        return te, en
+            return {
+                "telugu": "వివరాలు విజయవంతంగా రికార్డ్ చేశాము.",
+                "tamil": "விவரங்கள் வெற்றிகரமாக பதிவு செய்யப்பட்டன.",
+                "hindi": "लेनदेन का विवरण सफलतापूर्वक दर्ज कर लिया गया है।",
+                "kannada": "ವಹಿವಾಟಿನ ವಿವರಗಳು ಯಶಸ್ವಿಯಾಗಿ ದಾಖಲಾಗಿವೆ.",
+                "malayalam": "ഇടപാട് വിവരങ്ങൾ വിജയകരമായി രേഖപ്പെടുത്തി.",
+                "urdu": "لین دین کی تفصیلات کامیابی سے درج ہو گئیں۔",
+                "gujarati": "વ્યવહારની વિગતો સફળતાપૂર્વક નોંધાઈ ગઈ છે.",
+                "english": "Transaction details recorded successfully."
+            }
 
-# Global singleton
 speech_processor = SpeechProcessor()

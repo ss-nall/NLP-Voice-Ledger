@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import {
-  ReceiptText,
   Search,
-  Filter,
-  Info,
   ShieldCheck,
   ArrowDownLeft,
   ArrowUpRight,
   Edit2,
-  Trash2,
-  CheckCircle,
-  X
+  Trash2
 } from 'lucide-react';
 import { api } from '../api/client';
 import { ExplainabilityCard } from '../components/ExplainabilityCard';
 import { EditTransactionModal } from '../components/EditTransactionModal';
 import { useLedgerUpdated } from '../utils/events';
+import { useLanguage } from '../context/LanguageContext';
 
 export const TransactionsView: React.FC = () => {
+  const { t } = useLanguage();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDirection, setSelectedDirection] = useState<string>('');
@@ -54,7 +51,7 @@ export const TransactionsView: React.FC = () => {
   };
 
   const handleDeleteDirect = async (txId: string) => {
-    if (window.confirm("ఈ లావాదేవీని తొలగించాలనుకుంటున్నారా? బాకీ నిల్వ ఆటోమేటిక్ గా సరిచేయబడుతుంది.")) {
+    if (window.confirm(t('tx.confirm_delete', 'Are you sure you want to delete this transaction? Ledger balances will be automatically adjusted.'))) {
       try {
         await api.deleteTransaction(txId);
         loadTransactions();
@@ -92,32 +89,38 @@ export const TransactionsView: React.FC = () => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
         <div className="fin-card">
           <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
-            మొత్తం లావాదేవీలు (All Transactions)
+            {t('tx.total_tx', 'All Transactions')}
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-main)', marginTop: '4px' }}>
             {transactions.length}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ఖాతా పుస్తకంలో నమోదైన అన్ని ఎంట్రీలు</div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            {t('tx.total_tx_sub', 'All entries recorded in the double-entry ledger')}
+          </div>
         </div>
 
         <div className="fin-card fin-card-green">
           <div style={{ fontSize: '0.75rem', color: 'var(--jama-green-text)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
-            మొత్తం జమ / రావాలి (Total Inflow)
+            {t('tx.total_inflow', 'Total Inflow (Receivables)')}
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--jama-green)', marginTop: '4px' }}>
             +₹{totalReceivables.toLocaleString('en-IN')}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--jama-green-text)' }}>కస్టమర్ల నుండి రావలసిన మొత్తం</div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--jama-green-text)' }}>
+            {t('tx.total_inflow_sub', 'Total customer dues & receipts')}
+          </div>
         </div>
 
         <div className="fin-card fin-card-red">
           <div style={{ fontSize: '0.75rem', color: 'var(--udhaar-red-text)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
-            మొత్తం ఉధార్ / ఇవ్వాలి (Total Outflow)
+            {t('tx.total_outflow', 'Total Outflow (Payables)')}
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--udhaar-red)', marginTop: '4px' }}>
             -₹{totalPayables.toLocaleString('en-IN')}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--udhaar-red-text)' }}>సప్లయర్లకు చెల్లించాల్సిన మొత్తం</div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--udhaar-red-text)' }}>
+            {t('tx.total_outflow_sub', 'Total supplier dues & payments')}
+          </div>
         </div>
       </div>
 
@@ -129,7 +132,7 @@ export const TransactionsView: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="కస్టమర్, సప్లయర్ లేదా మాట్లాడిన మాటలతో వెతకండి (Search transactions)..."
+            placeholder={t('tx.search_placeholder', 'Search by party, keyword, or note...')}
             style={{
               width: '100%',
               background: 'var(--bg-card)',
@@ -149,56 +152,86 @@ export const TransactionsView: React.FC = () => {
             className={`btn ${selectedDirection === '' ? 'btn-primary' : 'btn-secondary'}`}
             style={{ padding: '8px 14px', fontSize: '0.82rem' }}
           >
-            అన్నీ (All Entries)
+            {t('tx.tab_all', 'All Entries')}
           </button>
           <button
             onClick={() => setSelectedDirection('receivable')}
             className={`btn ${selectedDirection === 'receivable' ? 'btn-emerald' : 'btn-secondary'}`}
             style={{ padding: '8px 14px', fontSize: '0.82rem' }}
           >
-            🟢 రావాలి (Inflow)
+            {t('tx.tab_inflow', '🟢 Inflow (Receivable)')}
           </button>
           <button
             onClick={() => setSelectedDirection('payable')}
             className={`btn ${selectedDirection === 'payable' ? 'btn-danger' : 'btn-secondary'}`}
             style={{ padding: '8px 14px', fontSize: '0.82rem' }}
           >
-            🔴 ఇవ్వాలి (Outflow)
+            {t('tx.tab_outflow', '🔴 Outflow (Payable)')}
           </button>
         </div>
       </div>
 
       {/* Transactions Ledger Table Card */}
       <div className="fin-card" style={{ padding: '0', overflow: 'hidden' }}>
-        {filtered.length === 0 ? (
-          <div style={{ padding: '48px 16px', textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.92rem' }}>
-            <div style={{ fontSize: '2rem', marginBottom: '8px' }}>📒</div>
-            <div style={{ fontWeight: 700, color: 'var(--text-main)', marginBottom: '4px' }}>
-              ఇంకా ఏ లావాదేవీలు నమోదు కాలేదు (No Transactions Found)
-            </div>
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              వాయిస్ లేదా చాట్ లో లావాదేవీ చెప్పగానే ఎంట్రీలు ఇక్కడ ఆటోమేటిక్ గా కనిపిస్తాయి.
+        {loading ? (
+          <div style={{ padding: '36px 16px', textAlign: 'center', color: 'var(--text-muted)' }}>
+            {t('tx.loading', 'Loading journal transactions...')}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="empty-state-card" style={{ border: 'none', borderRadius: '0' }}>
+            <div className="empty-state-icon">📒</div>
+            <h4 style={{ fontSize: '1.15rem', color: 'var(--text-main)', margin: 0, fontWeight: 700 }}>
+              {t('tx.no_records_title', 'No Transactions Found')}
+            </h4>
+            <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
+              {t('tx.no_records_sub', 'Transactions recorded via voice or chat will automatically appear here.')}
             </span>
+            <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <span className="prompt-chip">🎙️ "Ramesh 500 ichadu"</span>
+              <span className="prompt-chip">🎙️ "Pawan ki 8000 ivvali"</span>
+            </div>
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table className="fin-table">
               <thead>
                 <tr>
-                  <th style={{ minWidth: '105px' }}>తేదీ (Date)</th>
-                  <th style={{ minWidth: '160px' }}>వ్యక్తి / వ్యాపారం (Party)</th>
-                  <th style={{ minWidth: '120px' }}>రకం (Type)</th>
-                  <th style={{ minWidth: '130px' }}>దిశ (Direction)</th>
-                  <th style={{ minWidth: '120px', textAlign: 'right' }}>మొత్తం (Amount ₹)</th>
-                  <th style={{ minWidth: '120px', textAlign: 'right' }}>నిల్వ (Balance)</th>
-                  <th style={{ minWidth: '110px' }}>విధానం (Method)</th>
-                  <th style={{ minWidth: '100px' }}>ఆడిట్ (Audit)</th>
-                  <th style={{ minWidth: '95px', textAlign: 'center' }}>చర్యలు (Action)</th>
+                  <th style={{ minWidth: '105px' }}>{t('tx.th_date', 'Date')}</th>
+                  <th style={{ minWidth: '160px' }}>{t('tx.th_party', 'Party / Business')}</th>
+                  <th style={{ minWidth: '120px' }}>{t('tx.th_type', 'Type')}</th>
+                  <th style={{ minWidth: '130px' }}>{t('tx.th_direction', 'Direction')}</th>
+                  <th style={{ minWidth: '120px', textAlign: 'right' }}>{t('tx.th_amount', 'Amount (₹)')}</th>
+                  <th style={{ minWidth: '120px', textAlign: 'right' }}>{t('tx.th_balance', 'Balance')}</th>
+                  <th style={{ minWidth: '110px' }}>{t('tx.th_method', 'Method')}</th>
+                  <th style={{ minWidth: '100px' }}>{t('tx.th_audit', 'Audit')}</th>
+                  <th style={{ minWidth: '120px', textAlign: 'center' }}>{t('tx.th_actions', 'Action')}</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((tx) => {
-                  const isReceivable = tx.direction === 'receivable';
+                  const txType = (tx.transaction_type || '').toUpperCase();
+                  const isPayable = tx.direction === 'payable' || tx.counterparty_type === 'supplier';
+                  const isPaymentMade = isPayable && (txType.includes('PAYMENT') || tx.status === 'SETTLED');
+                  const isPaymentRecv = !isPayable && (txType.includes('PAYMENT') || txType.includes('RECEIVED') || tx.status === 'PARTIAL_PAYMENT');
+
+                  let badgeClass = 'badge-emerald';
+                  let badgeText = `🟢 ${t('term.receivable', 'Receivable')}`;
+                  let amountColor = 'var(--receivable-color)';
+
+                  if (isPaymentMade) {
+                    badgeClass = 'badge-amber';
+                    badgeText = `💸 ${t('term.paid', 'Paid')}`;
+                    amountColor = 'var(--paid-color)';
+                  } else if (isPaymentRecv) {
+                    badgeClass = 'badge-cyan';
+                    badgeText = `💰 ${t('term.received', 'Received')}`;
+                    amountColor = 'var(--received-color)';
+                  } else if (isPayable) {
+                    badgeClass = 'badge-rose';
+                    badgeText = `🔴 ${t('term.payable', 'Payable')}`;
+                    amountColor = 'var(--payable-color)';
+                  }
+
                   const isSelected = selectedTransaction?.id === tx.id;
                   return (
                     <tr
@@ -229,15 +262,14 @@ export const TransactionsView: React.FC = () => {
                         </span>
                       </td>
                       <td>
-                        <span className={`badge ${isReceivable ? 'badge-jama' : 'badge-udhaar'}`} style={{ fontSize: '0.74rem' }}>
-                          {isReceivable ? <ArrowDownLeft size={13} /> : <ArrowUpRight size={13} />}
-                          {isReceivable ? 'రావాలి (Jama)' : 'ఇవ్వాలి (Udhaar)'}
+                        <span className={`badge ${badgeClass}`} style={{ fontSize: '0.74rem' }}>
+                          {badgeText}
                         </span>
                       </td>
-                      <td style={{ textAlign: 'right', fontWeight: 800, fontSize: '0.98rem', color: isReceivable ? 'var(--receivable-color)' : 'var(--payable-color)' }}>
-                        {isReceivable ? '+' : '-'}₹{Number(tx.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      <td className="tabular-nums" style={{ textAlign: 'right', fontWeight: 800, fontSize: '0.98rem', color: amountColor }}>
+                        {isPaymentMade ? '-' : isPaymentRecv ? '+' : isPayable ? '-' : '+'}₹{Number(tx.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </td>
-                      <td style={{ textAlign: 'right', fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                      <td className="tabular-nums" style={{ textAlign: 'right', fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-main)' }}>
                         ₹{Number(tx.balance_after || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </td>
                       <td style={{ fontSize: '0.8rem', textTransform: 'capitalize', color: 'var(--text-muted)' }}>
@@ -262,7 +294,7 @@ export const TransactionsView: React.FC = () => {
                             style={{ padding: '4px 8px', fontSize: '0.72rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                             title="Edit Entry"
                           >
-                            <Edit2 size={12} /> సవరించు (Edit)
+                            <Edit2 size={12} /> {t('btn.edit', 'Edit')}
                           </button>
                           <button
                             type="button"
@@ -274,7 +306,7 @@ export const TransactionsView: React.FC = () => {
                             style={{ padding: '4px 8px', fontSize: '0.72rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                             title="Delete Entry"
                           >
-                            <Trash2 size={12} /> తొలగించు
+                            <Trash2 size={12} /> {t('btn.delete', 'Delete')}
                           </button>
                         </div>
                       </td>

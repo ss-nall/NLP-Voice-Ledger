@@ -1,7 +1,7 @@
+import React from 'react';
 import {
   LayoutDashboard,
   Mic,
-  Users,
   Clock,
   ReceiptText,
   Scale,
@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   Wallet
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface SidebarProps {
   currentView: string;
@@ -21,17 +22,19 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, onSelectView }) => {
+  const { t, language } = useLanguage();
+
   const navItems = [
-    { id: 'dashboard', label: 'హోమ్ (Home Overview)', icon: LayoutDashboard },
-    { id: 'conversation', label: 'వాయిస్ లెక్కలు (Voice & Text)', icon: Mic, badge: 'ముఖ్యం' },
-    { id: 'reminders', label: 'రిమైండర్లు & WhatsApp', icon: Clock, badge: 'New' },
-    { id: 'customers', label: 'రావాల్సినవి (Receivables)', icon: ArrowDownLeft, color: 'var(--jama-green)' },
-    { id: 'suppliers', label: 'ఇవ్వాల్సినవి (Payables)', icon: ArrowUpRight, color: 'var(--udhaar-red)' },
-    { id: 'received', label: 'వచ్చినవి (Received Inflows)', icon: TrendingUp, color: '#0284C7' },
-    { id: 'paid', label: 'చెల్లించినవి (Paid Outflows)', icon: TrendingDown, color: '#D97706' },
-    { id: 'transactions', label: 'అన్ని లావాదేవీలు (All Journal)', icon: ReceiptText },
-    { id: 'health', label: 'ఖాతా ఆరోగ్యం (Trial Balance)', icon: Scale },
-    { id: 'settings', label: 'సెట్టింగ్స్ (Settings)', icon: Settings },
+    { id: 'dashboard', label: t('nav.dashboard', 'Home Overview'), icon: LayoutDashboard },
+    { id: 'conversation', label: t('nav.conversation', 'Voice & Text'), icon: Mic, badge: t('nav.badge.primary', 'Core') },
+    { id: 'reminders', label: t('nav.reminders', 'Reminders & WhatsApp'), icon: Clock, badge: 'WhatsApp' },
+    { id: 'customers', label: t('nav.receivables', 'Receivables'), icon: ArrowDownLeft, color: 'var(--jama-green)' },
+    { id: 'suppliers', label: t('nav.payables', 'Payables'), icon: ArrowUpRight, color: 'var(--udhaar-red)' },
+    { id: 'received', label: t('nav.received', 'Received Inflows'), icon: TrendingUp, color: '#0284C7' },
+    { id: 'paid', label: t('nav.paid', 'Paid Outflows'), icon: TrendingDown, color: '#D97706' },
+    { id: 'transactions', label: t('nav.transactions', 'All Journal'), icon: ReceiptText },
+    { id: 'health', label: t('nav.health', 'Trial Balance'), icon: Scale },
+    { id: 'settings', label: t('nav.settings', 'Settings'), icon: Settings },
   ];
 
   return (
@@ -43,16 +46,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onSelectView }) =
         </div>
         <div>
           <h1 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--maroon)', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-            వ్యాపార ఖాతా
+            {t('app.name', 'NLP Ledger')}
           </h1>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Bilingual NLP Khata</p>
+          <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>{t('app.subtitle', 'Multilingual Khata')}</p>
         </div>
       </div>
 
       {/* Navigation Links */}
       <nav style={{ padding: '16px 10px', flex: 1, overflowY: 'auto' }}>
         <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-dim)', padding: '0 12px 10px', letterSpacing: '0.06em' }}>
-          ఖాతా మెనూ (Main Menu)
+          {t('nav.menu', 'Main Menu')}
         </div>
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -89,7 +92,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onSelectView }) =
               <Icon size={19} color={item.color || (isActive ? 'var(--receivable-color)' : 'var(--text-dim)')} />
               <span style={{ flex: 1 }}>{item.label}</span>
               {item.badge && (
-                <span className={`badge ${item.badge === 'ముఖ్యం' ? 'badge-jama' : 'badge-gold'}`} style={{ fontSize: '0.68rem', padding: '2px 6px' }}>
+                <span className="badge badge-gold" style={{ fontSize: '0.68rem', padding: '2px 6px' }}>
                   {item.badge}
                 </span>
               )}
@@ -98,18 +101,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onSelectView }) =
         })}
       </nav>
 
-      {/* Quick Balance Footer */}
-      <div style={{ padding: '16px', borderTop: '1px solid var(--border-color)', background: 'var(--bg-card-subtle)' }}>
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase' }}>
-          దుకాణం లెక్కలు (Shop Ledger)
+      {/* Footer System Status & Ledger Invariant Badge */}
+      <div style={{ padding: '14px 16px', borderTop: '1px solid var(--border-color)', background: 'var(--bg-card-subtle)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+          <CheckCircle2 size={15} color="var(--jama-green)" />
+          <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-main)' }}>
+            {t('header.trial_balance', 'Double-Entry Balanced')}
+          </span>
         </div>
-        <div style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-main)', marginTop: '2px' }}>
-          నా వ్యాపార ఖాతా బుక్
-        </div>
-        <div style={{ fontSize: '0.75rem', color: 'var(--receivable-color)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', marginTop: '3px' }}>
-          <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--receivable-color)' }}></span>
-          ఆటోమేటిక్ డబుల్ ఎంట్రీ లైవ్
-        </div>
+        <p style={{ fontSize: '0.7rem', color: 'var(--text-dim)', margin: 0 }}>
+          Deterministic NLP • 4 Languages
+        </p>
       </div>
     </aside>
   );

@@ -1,46 +1,60 @@
 {
-  "benchmark_timestamp": "2026-09-13 21:37:33",
-  "total_test_samples": 350,
-  "overall_exact_match_pct": 89.43,
-  "overall_amount_match_pct": 94.86,
-  "overall_direction_accuracy_pct": 94.57,
-  "overall_event_type_accuracy_pct": 92.29,
-  "avg_end_to_end_latency_ms": 6.35,
+  "benchmark_timestamp": "2026-10-07 10:52:41",
+  "total_test_samples": 450,
+  "overall_exact_match_pct": 90.67,
+  "overall_amount_match_pct": 99.11,
+  "overall_direction_accuracy_pct": 91.33,
+  "overall_event_type_accuracy_pct": 90.67,
+  "avg_end_to_end_latency_ms": 364.78,
   "category_breakdown": {
-    "telugu_script": {
-      "samples": 57,
-      "exact_match_pct": 100.0,
-      "amount_match_pct": 100.0,
-      "direction_match_pct": 100.0,
-      "avg_latency_ms": 7.89
-    },
-    "english_clean": {
-      "samples": 65,
-      "exact_match_pct": 100.0,
-      "amount_match_pct": 100.0,
-      "direction_match_pct": 100.0,
-      "avg_latency_ms": 7.24
-    },
     "spoken_telugu_numerals": {
-      "samples": 69,
-      "exact_match_pct": 89.86,
+      "samples": 150,
+      "exact_match_pct": 80.67,
       "amount_match_pct": 100.0,
-      "direction_match_pct": 89.86,
-      "avg_latency_ms": 5.71
+      "direction_match_pct": 80.67,
+      "avg_latency_ms": 366.17
     },
-    "code_mixed_clean": {
-      "samples": 77,
+    "tamil_script": {
+      "samples": 54,
+      "exact_match_pct": 87.04,
+      "amount_match_pct": 100.0,
+      "direction_match_pct": 87.04,
+      "avg_latency_ms": 367.15
+    },
+    "hindi_script": {
+      "samples": 55,
       "exact_match_pct": 100.0,
       "amount_match_pct": 100.0,
       "direction_match_pct": 100.0,
-      "avg_latency_ms": 5.85
+      "avg_latency_ms": 354.2
     },
-    "noisy_code_mixed": {
-      "samples": 82,
-      "exact_match_pct": 63.41,
-      "amount_match_pct": 78.05,
-      "direction_match_pct": 85.37,
-      "avg_latency_ms": 5.56
+    "code_mixed_hinglish": {
+      "samples": 52,
+      "exact_match_pct": 100.0,
+      "amount_match_pct": 100.0,
+      "direction_match_pct": 100.0,
+      "avg_latency_ms": 363.94
+    },
+    "spoken_tamil_numerals": {
+      "samples": 49,
+      "exact_match_pct": 87.76,
+      "amount_match_pct": 91.84,
+      "direction_match_pct": 93.88,
+      "avg_latency_ms": 367.83
+    },
+    "code_mixed_tanglish": {
+      "samples": 47,
+      "exact_match_pct": 100.0,
+      "amount_match_pct": 100.0,
+      "direction_match_pct": 100.0,
+      "avg_latency_ms": 375.5
+    },
+    "spoken_hindi_numerals": {
+      "samples": 43,
+      "exact_match_pct": 100.0,
+      "amount_match_pct": 100.0,
+      "direction_match_pct": 100.0,
+      "avg_latency_ms": 356.29
     }
   }
 }

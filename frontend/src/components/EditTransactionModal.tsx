@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Edit3, Check, X, Trash2, AlertCircle } from 'lucide-react';
 import { api } from '../api/client';
 import { notifyLedgerUpdated } from '../utils/events';
+import { useLanguage } from '../context/LanguageContext';
 
 interface EditTransactionModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
   onDeleted,
   onSuccess
 }) => {
+  const { t } = useLanguage();
   const [counterpartyName, setCounterpartyName] = useState('');
   const [amount, setAmount] = useState<number | string>('');
   const [direction, setDirection] = useState<'receivable' | 'payable'>('receivable');
@@ -48,12 +50,12 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!counterpartyName.trim()) {
-      setError('దయచేసి పేరు నమోదు చేయండి (Please enter counterparty name)');
+      setError(t('modal.edit_err_name', 'Please enter counterparty name'));
       return;
     }
     const numAmount = Number(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
-      setError('దయచేసి సరైన మొత్తం నమోదు చేయండి (Please enter a valid amount > 0)');
+      setError(t('modal.edit_err_amount', 'Please enter a valid amount > 0'));
       return;
     }
 
@@ -143,10 +145,10 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
             </div>
             <div>
               <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700 }}>
-                లావాదేవీ సవరణ (Edit Transaction)
+                {t('modal.edit_title', 'Edit Transaction Entry')}
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted, #64748b)' }}>
-                ID: {transaction.id}
+                ID: #{transaction.id}
               </span>
             </div>
           </div>
@@ -188,7 +190,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
           {/* Counterparty Name */}
           <div style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px' }}>
-              వ్యక్తి / వ్యాపారం పేరు (Counterparty Name)
+              {t('modal.edit_party_name', 'Counterparty / Party Name')}
             </label>
             <input
               type="text"
@@ -212,7 +214,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '16px' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px' }}>
-                మొత్తం (Amount ₹)
+                {t('modal.edit_amount', 'Amount (₹)')}
               </label>
               <input
                 type="number"
@@ -235,7 +237,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
             </div>
             <div>
               <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px' }}>
-                తేదీ (Date)
+                {t('modal.edit_date', 'Date')}
               </label>
               <input
                 type="date"
@@ -259,7 +261,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '16px' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px' }}>
-                దిశ (Direction)
+                {t('modal.edit_direction', 'Direction')}
               </label>
               <select
                 value={direction}
@@ -274,13 +276,13 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                   fontSize: '0.9rem'
                 }}
               >
-                <option value="receivable">కస్టమర్ రావలసినవి / వచ్చినవి (Customer - Receivable)</option>
-                <option value="payable">సప్లయర్ ఇవ్వవలసినవి / చెల్లించినవి (Supplier - Payable)</option>
+                <option value="receivable">{t('modal.edit_dir_cust', 'Customer - Receivable (Inflow)')}</option>
+                <option value="payable">{t('modal.edit_dir_supp', 'Supplier - Payable (Outflow)')}</option>
               </select>
             </div>
             <div>
               <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px' }}>
-                లావాదేవీ రకం (Tx Type)
+                {t('modal.edit_tx_type', 'Transaction Type')}
               </label>
               <select
                 value={transactionType}
@@ -297,15 +299,15 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
               >
                 {direction === 'receivable' ? (
                   <>
-                    <option value="CREDIT_SALE">అప్పు సరుకు (Credit Sale - Owed)</option>
-                    <option value="PAYMENT_RECEIVED">డబ్బులు వచ్చినవి (Payment Received)</option>
-                    <option value="RECEIVABLE_INVOICE">ఇన్వాయిస్ (Invoice)</option>
+                    <option value="CREDIT_SALE">{t('modal.edit_opt_credit_sale', 'Credit Sale (Owed by Customer)')}</option>
+                    <option value="PAYMENT_RECEIVED">{t('modal.edit_opt_payment_received', 'Payment Received (Inflow)')}</option>
+                    <option value="RECEIVABLE_INVOICE">{t('modal.edit_opt_invoice', 'Receivable Invoice')}</option>
                   </>
                 ) : (
                   <>
-                    <option value="PURCHASE">సరుకు కొనుగోలు (Purchase - Owed)</option>
-                    <option value="PAYMENT_MADE">డబ్బులు చెల్లించినవి (Payment Made)</option>
-                    <option value="PAYABLE_OBLIGATION">బాకీ (Payable Obligation)</option>
+                    <option value="PURCHASE">{t('modal.edit_opt_purchase', 'Credit Purchase (Owed to Supplier)')}</option>
+                    <option value="PAYMENT_MADE">{t('modal.edit_opt_payment_made', 'Payment Made (Outflow)')}</option>
+                    <option value="PAYABLE_OBLIGATION">{t('modal.edit_opt_payable_obligation', 'Payable Obligation')}</option>
                   </>
                 )}
               </select>
@@ -315,7 +317,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
           {/* Payment Method */}
           <div style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px' }}>
-              చెల్లింపు విధానం (Payment Method)
+              {t('modal.edit_method', 'Payment Method')}
             </label>
             <select
               value={paymentMethod}
@@ -330,10 +332,10 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                 fontSize: '0.9rem'
               }}
             >
-              <option value="cash">నగదు (Cash)</option>
-              <option value="upi">యూపీఐ (UPI / PhonePe / GPay)</option>
-              <option value="bank_transfer">బ్యాంక్ ఖాతా (Bank Transfer)</option>
-              <option value="cheque">చెక్కు (Cheque)</option>
+              <option value="cash">{t('modal.edit_method_cash', 'Cash')}</option>
+              <option value="upi">{t('modal.edit_method_upi', 'UPI / PhonePe / GPay')}</option>
+              <option value="bank_transfer">{t('modal.edit_method_bank', 'Bank Transfer')}</option>
+              <option value="cheque">{t('modal.edit_method_cheque', 'Cheque')}</option>
             </select>
           </div>
 
@@ -347,7 +349,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
               border: '1px solid #f87171'
             }}>
               <p style={{ margin: '0 0 10px 0', fontSize: '0.85rem', fontWeight: 600, color: '#991b1b' }}>
-                ఈ లావాదేవీని ఖచ్చితంగా తొలగించాలనుకుంటున్నారా? (Are you sure you want to delete this transaction?)
+                {t('modal.edit_delete_confirm', 'Are you sure you want to delete this transaction permanently?')}
               </p>
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                 <button
@@ -362,7 +364,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                     fontSize: '0.8rem'
                   }}
                 >
-                  రద్దు (Cancel)
+                  {t('btn.cancel', 'Cancel')}
                 </button>
                 <button
                   type="button"
@@ -379,7 +381,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                     fontWeight: 600
                   }}
                 >
-                  {loading ? 'తొలగిస్తోంది...' : 'అవును, తొలగించు (Confirm Delete)'}
+                  {loading ? 'Deleting...' : t('btn.confirm', 'Confirm Delete')}
                 </button>
               </div>
             </div>
@@ -406,7 +408,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                 }}
               >
                 <Trash2 size={16} />
-                <span>తొలగించు (Delete)</span>
+                <span>{t('btn.delete', 'Delete')}</span>
               </button>
             ) : <div />}
 
@@ -424,7 +426,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                   fontSize: '0.85rem'
                 }}
               >
-                రద్దు (Cancel)
+                {t('btn.cancel', 'Cancel')}
               </button>
               <button
                 type="submit"
@@ -445,7 +447,7 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
                 }}
               >
                 <Check size={16} />
-                <span>{loading ? 'భద్రపరుస్తోంది...' : 'భద్రపరచు (Save Changes)'}</span>
+                <span>{loading ? 'Saving...' : t('btn.save', 'Save Changes')}</span>
               </button>
             </div>
           </div>
